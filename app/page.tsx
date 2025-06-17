@@ -1,9 +1,11 @@
 import Card from "./components/Card";
 import { DollarSign } from "lucide-react";
+import RevenueChart from "./components/RevenueChart";
 
 
 export default function Home() {
   return (
+    <>
     <div className="flex space-x-8 p-6">
 
         <div>
@@ -34,6 +36,12 @@ export default function Home() {
         sales="2% increase from last month"/> 
         </div>
 
+    <RevenueChart/>
+
+
     </div>       
+
+        </>
+
   );
 }
