@@ -1,0 +1,30 @@
+[
+  {
+    "label": "Total Revenue",
+    "amount": "KD 53,009.89",
+    "sales": "12% increase from last month",
+    "icon": "DollarSign",
+    "color": "#800080"  
+  },
+  {
+    "label": "Installment Pending KD",
+    "amount": "KD 5,000",
+    "sales": "10% decrease from last month",
+    "icon": "DollarSign",
+    "color": "#FFA500"  
+  },
+  {
+    "label": "Institute share Percentage",
+    "amount": "KD 4,000",
+    "sales": "8% increase from last month",
+    "icon": "DollarSign",
+    "color": "#1e40af" 
+  },
+  {
+    "label": "Instructor share Percentage",
+    "amount": "KD 5,000",
+    "sales": "2% increase from last month",
+    "icon": "DollarSign",
+    "color": "#FFD700"  
+  }
+]
