@@ -4,27 +4,27 @@
     "amount": "KD 53,009.89",
     "sales": "12% increase from last month",
     "icon": "DollarSign",
-    "color": "#800080"  
+    "color": "bg-purple-400"
   },
   {
     "label": "Installment Pending KD",
     "amount": "KD 5,000",
     "sales": "10% decrease from last month",
     "icon": "DollarSign",
-    "color": "#FFA500"  
+    "color": "bg-orange-400"
   },
   {
     "label": "Institute share Percentage",
     "amount": "KD 4,000",
     "sales": "8% increase from last month",
     "icon": "DollarSign",
-    "color": "#1e40af" 
+    "color": "bg-blue-400"
   },
   {
     "label": "Instructor share Percentage",
     "amount": "KD 5,000",
     "sales": "2% increase from last month",
     "icon": "DollarSign",
-    "color": "#FFD700"  
+    "color": "bg-yellow-300"
   }
 ]

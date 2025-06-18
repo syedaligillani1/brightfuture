@@ -1,26 +1,37 @@
-'use client'
-type LogItem = {
+type Activity = {
   time: string
-  content: string
+  title: string
+  color: string
+  description: string
 }
 
 type Props = {
-  title: string
-  logs: LogItem[]
+  data: Activity[]
 }
 
-export default function ActivityLog({ title, logs }: Props) {
+export default function RecentActivity({ data }: Props) {
   return (
     <div className="bg-white p-4 rounded-xl shadow text-sm">
-      <h2 className="text-sm font-semibold mb-2">{title}</h2>
-      <ul className="space-y-2">
-        {logs.map((log, i) => (
-          <li key={i} className="flex justify-between border-b pb-1">
-            <span className="text-xs text-gray-400">{log.time}</span>
-            <span>{log.content}</span>
-          </li>
+      <h2 className="font-semibold mb-3">Recent Activity</h2>
+      <div className="space-y-4 relative">
+        {data.map((item, index) => (
+          <div key={index} className="flex items-start space-x-3 relative">
+            <div className="w-14 text-xs text-gray-500">{item.time}</div>
+
+            <div className="flex flex-col items-center">
+              <div className={`w-3 h-3 rounded-full ${item.color} z-10`} />
+              {index < data.length - 1 && (
+                <div className="h-full w-px bg-gray-300" />
+              )}
+            </div>
+
+            <div className="mb-2 -mt-2">
+              <p className="font-medium">{item.title}</p>
+              <p className="text-xs text-gray-500">{item.description}</p>
+            </div>
+          </div>
         ))}
-      </ul>
+      </div>
     </div>
   )
 }
