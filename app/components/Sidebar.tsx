@@ -4,13 +4,13 @@ import { usePathname } from 'next/navigation';
 import { menuItems } from './content/SidebarContent';
 import { useState } from 'react';
 export default function Sidebar() {
+    
     const pathname = usePathname();
 
-    const [isSidebar, setSidebar] = useState(true)
+    // const [isSidebar, setSidebar] = useState(true)
 
     return (
         <>
-            {isSidebar && (
                 <div className="h-screen w-64 bg-blue-900 text-white flex flex-col">
                     <div className="p-6">
                         <img
@@ -39,7 +39,6 @@ export default function Sidebar() {
                         </ul>
                     </nav>
                 </div>
-            )}
         </>
     );
 }
