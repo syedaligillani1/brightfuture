@@ -1,15 +1,15 @@
 'use client';
-import React, { useState, useEffect, memo } from "react";
+import React, { useState, useEffect } from "react";
 import { DollarSign, Users, BookOpen, GraduationCap, MoreVertical } from 'lucide-react';
 import Card from '../components/Card';
 import data from '../components/data.json';
 import RevenueChart from '../components/RevenueChart';
 import OverviewChart from '../components/Overview';
 import GenericTable from "../components/table/GenericTable";
-import { useRouter } from "next/navigation"; 
+import { useRouter } from "next/navigation";
 import { universityColumns, University } from "./data";
 import { ENDPOINTS } from "../api/url/endpoints";
-
+import Modal from "../reused-Components /Modal";
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   DollarSign,
@@ -19,26 +19,24 @@ const iconMap: Record<string, React.ComponentType<any>> = {
 };
 
 export default function Universities() {
-
-  const [tableRows, setTableRows] = useState([]);
-  const [originalData, setOriginalData] = useState([]);
-  const [openDropdown, setOpenDropdown] = useState(null);
-
+  const [tableRows, setTableRows] = useState<University[]>([]);
+  const [originalData, setOriginalData] = useState<University[]>([]);
+  const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [activeTab, setActiveTab] = useState("All Universities");
   const [isLoading, setIsLoading] = useState(true);
 
-
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalContent, setModalContent] = useState({ title: '', description: '' });
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedUniversity, setSelectedUniversity] = useState<University | null>(null);
 
   const router = useRouter();
 
   const fetchUniversities = async () => {
     try {
-      const response = await fetch(ENDPOINTS.UNIVERSITIES); // ✅ replaced
-      if (!response.ok) {
-        throw new Error('Failed to fetch universities');
-      }
+      const response = await fetch(ENDPOINTS.UNIVERSITIES);
+      if (!response.ok) throw new Error('Failed to fetch universities');
       const data = await response.json();
-      
       setTableRows(data);
       setOriginalData(data);
     } catch (error) {
@@ -52,10 +50,48 @@ export default function Universities() {
     fetchUniversities();
   }, []);
 
+  const showModal = (title: string, description: string) => {
+    setModalContent({ title, description });
+    setModalOpen(true);
+  };
+
+  const handleDelete = (universityToDelete: University) => {
+    setSelectedUniversity(universityToDelete);
+    setConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (!selectedUniversity) return;
+    try {
+      const response = await fetch(`${ENDPOINTS.UNIVERSITIES}?name=${encodeURIComponent(selectedUniversity.name)}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete university');
+      }
+      setTableRows(prev => prev.filter(u => u.name !== selectedUniversity.name));
+      setOriginalData(prev => prev.filter(u => u.name !== selectedUniversity.name));
+      setOpenDropdown(null);
+      showModal('Deleted', `${selectedUniversity.name} has been successfully removed.`);
+    } catch (error) {
+      showModal('Delete Failed', error instanceof Error ? error.message : 'Failed to delete university. Please try again.');
+    } finally {
+      setConfirmOpen(false);
+      setSelectedUniversity(null);
+    }
+  };
+
+  const handleEdit = (university: University) => {
+    router.push(`/universities/edit/${encodeURIComponent(university.name)}`);
+  };
+
+  const handleView = (university: University) => {
+    router.push(`/universities/view/${encodeURIComponent(university.name)}`);
+  };
 
   const handleSearch = (query: string) => {
     const lowercasedQuery = query.toLowerCase();
-    
     if (!query) {
       setTableRows(originalData);
     } else {
@@ -65,39 +101,6 @@ export default function Universities() {
       setTableRows(filtered);
     }
   };
-  
-
-  const handleEdit = (university: University) => {
-    router.push(`/universities/edit/${encodeURIComponent(university.name)}`);
-  };
-
-  const handleDelete = async (universityToDelete: University) => {
-    if (!window.confirm(`Are you sure you want to delete ${universityToDelete.name}?`)) {
-      return;
-    }
-
-    try {
-      const response = await fetch(`${ENDPOINTS.UNIVERSITIES}?name=${encodeURIComponent(universityToDelete.name)}`, {
-  method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to delete university');
-      }
-
-      setTableRows(prevRows => prevRows.filter(u => u.name !== universityToDelete.name));
-      setOriginalData(prevRows => prevRows.filter(u => u.name !== universityToDelete.name));
-      setOpenDropdown(null);
-    } catch (error) {
-      console.error('Error deleting university:', error);
-      alert(error instanceof Error ? error.message : 'Failed to delete university. Please try again.');
-    }
-  };
-
-  const handleView = (university: University) => {
-    router.push(`/universities/view/${encodeURIComponent(university.name)}`);
-  };
 
   const filteredRows = tableRows.filter((u) => {
     if (activeTab === "Active Universities") return u.status === "Active";
@@ -105,27 +108,19 @@ export default function Universities() {
     return true;
   });
 
-  if (isLoading) {
-    return <div className="p-8 text-center">Loading universities...</div>;
-  }
+  if (isLoading) return <div className="p-8 text-center">Loading universities...</div>;
 
   return (
     <div className="p-2 sm:p-4 md:p-6 space-y-4 sm:space-y-6">
-
       <h1 className="text-lg sm:text-2xl font-bold mb-2 sm:mb-4 pr-16 md:pr-0">Universities</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         {data.map((item, index) => {
           const IconComponent = iconMap[item.icon] || DollarSign;
-
           return (
             <Card
               key={index}
-              icon={
-                <div className={`p-3 rounded-full ${item.color}`}>
-                  <IconComponent size={20} className="text-white" />
-                </div>
-              }
+              icon={<div className={`p-3 rounded-full ${item.color}`}><IconComponent size={20} className="text-white" /></div>}
               label={item.label}
               amount={item.amount}
               sales={item.sales}
@@ -162,18 +157,13 @@ export default function Universities() {
                     <span className="text-xs sm:text-sm font-medium truncate max-w-[80px] sm:max-w-[120px]">{u.name}</span>
                   </div>
                 </td>
-                <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{u.departments}</td>
-                <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{u.instructors}</td>
-                <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{u.courses}</td>
-                <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{u.totalStudents}</td>
-                <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{u.enrolledStudents}</td>
+                <td className="text-xs sm:text-sm px-2 py-2 sm:px-4 sm:py-3">{u.departments}</td>
+                <td className="text-xs sm:text-sm px-2 py-2 sm:px-4 sm:py-3">{u.instructors}</td>
+                <td className="text-xs sm:text-sm px-2 py-2 sm:px-4 sm:py-3">{u.courses}</td>
+                <td className="text-xs sm:text-sm px-2 py-2 sm:px-4 sm:py-3">{u.totalStudents}</td>
+                <td className="text-xs sm:text-sm px-2 py-2 sm:px-4 sm:py-3">{u.enrolledStudents}</td>
                 <td className="px-2 py-2 sm:px-4 sm:py-3">
-                  <span className={`inline-block px-2 py-1 text-xs rounded-full ${u.status === "Active"
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                    }`}>
-                    {u.status}
-                  </span>
+                  <span className={`inline-block px-2 py-1 text-xs rounded-full ${u.status === "Active" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>{u.status}</span>
                 </td>
                 <td className="px-2 py-2 sm:px-4 sm:py-3 relative text-right">
                   <button
@@ -185,24 +175,9 @@ export default function Universities() {
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
-                      <button
-                        className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
-                        onClick={() => handleEdit(u)}
-                      >
-                        <span>Edit</span>
-                      </button>
-                      <button
-                        className=" text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left  hover:bg-gray-50 transition-colors flex items-center gap-2"
-                        onClick={() => handleDelete(u)}
-                      >
-                        <span>Delete</span>
-                      </button>
-                      <button
-                        className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
-                        onClick={() => handleView(u)}
-                      >
-                        <span>View</span>
-                      </button>
+                      <button className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleEdit(u)}>Edit</button>
+                      <button className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleDelete(u)}>Delete</button>
+                      <button className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleView(u)}>View</button>
                     </div>
                   )}
                 </td>
@@ -212,6 +187,24 @@ export default function Universities() {
           onAddNew={() => router.push('/universities/add')}
         />
       </div>
+
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title={modalContent.title}
+        description={modalContent.description}
+        confirmLabel="OK"
+      />
+
+      <Modal
+        open={confirmOpen}
+        onClose={() => setConfirmOpen(false)}
+        title="Are you sure?"
+        description={`This will delete ${selectedUniversity?.name}`}
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={confirmDelete}
+      />
     </div>
-  )
+  );
 }

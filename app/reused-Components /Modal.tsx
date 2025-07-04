@@ -11,7 +11,7 @@ type ModalProps = {
 export default function Modal({
   open,
   onClose,
-  title = ,
+  title = "",
   description ,
   confirmLabel ,
   cancelLabel ,
@@ -20,7 +20,7 @@ export default function Modal({
   if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
         <button
           onClick={onClose}
