@@ -4,7 +4,6 @@ import Card from './components/Card';
 import data from './components/data.json';
 import RevenueChart from './components/RevenueChart';
 import OverviewChart from './components/Overview';
-import Table from './components/table/Table';
 import InvoiceCardList from './components/InvoiceCardList';
 import CouponCardList from './components/CouponCard';
 import ActivityLog from './components/ActivityLog';
@@ -13,6 +12,11 @@ import ScheduleCardList from './components/ScheduleCardList';
 import CalendarScheduleBox from './components/CalendarScheduleBox';
 import RecentActivity from './components/ActivityLog';
 import Schedules from './components/ScheduleCardList';
+import UniversitiesTable from './universities/UniversitiesTable';
+import tableData from './components/table/table.json';
+import Button from './utility/Button';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function Home() {
 
@@ -29,107 +33,107 @@ const scheduleData = [
   { title: 'Data Structures', time: '9 am' }
 ]
 
-  return (
-    <div className="p-6 space-y-6">
+const router = useRouter();
+const [activeTab, setActiveTab] = useState("All Universities");
+const tabs = ["All Universities", "Active Universities", "Inactive Universities"];
 
-<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-  {data.map((item, index) => {
-    const IconComponent = Icons[item.icon as keyof typeof Icons];
+const filteredData = tableData.filter((row) => {
+  if (activeTab === "Active Universities") return row.status === "Paid" || row.status === "Active";
+  if (activeTab === "Inactive Universities") return row.status === "Pending" || row.status === "Inactive";
+  return true;
+});
 
-    return (
-      <Card
-        key={index}
-        icon={
-          <div className={`p-3 rounded-full ${item.color}`}>
-            <IconComponent size={20} className="text-white" />
-          </div>
-        }
-        label={item.label}
-        amount={item.amount}
-        sales={item.sales}
-      />
-    );
-  })}
-</div>
+return (
+  <div className="max-w-screen-2xl mx-auto space-y-6">
+    {/* Stats Cards */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+      {data.map((item, index) => {
+        const IconComponent = Icons[item.icon as keyof typeof Icons] as React.ElementType;
+        return (
+          <Card
+            key={index}
+            icon={
+              <div className={`p-3 rounded-full ${item.color}`}>
+                <IconComponent size={20} className="text-white" />
+              </div>
+            }
+            label={item.label}
+            amount={item.amount}
+            sales={item.sales}
+          />
+        );
+      })}
+    </div>
 
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-[400px]">
-        <div className="h-[400px] bg-white rounded-xl shadow p-6">
+    {/* Charts */}
+    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
+      <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+        <div className="h-[250px] sm:h-[350px] lg:h-[400px]">
           <RevenueChart />
         </div>
-        <div className="bg-white rounded-xl shadow p-6 h-full">
+      </div>
+      <div className="bg-white rounded-xl shadow p-4 sm:p-6">
+        <div className="h-[250px] sm:h-[350px] lg:h-[400px]">
           <OverviewChart />
         </div>
       </div>
-      <Table />
+    </div>
 
-      <div className=" grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        <InvoiceCardList
-          title="Invoices"
-          items={[
-            {
-              name: 'Student Name 1',
-              university: 'ABC University',
-              id: '#123456',
-              department: 'Computer Science',
-              invoiceNo: 'KD 983',
-              status: 'Pending'
-            },
-            {
-              name: 'Student Name 2',
-              university: 'XYZ University',
-              id: '#789012',
-              department: 'Accounting',
-              invoiceNo: 'KD 984',
-              status: 'Paid'
-            },
-            {
-              name: 'Student Name 3',
-              university: 'LMN University',
-              id: '#456789',
-              department: 'Business',
-              invoiceNo: 'KD 985',
-              status: 'Pending'
-            }
-          ]}
-        />
-
-        <CouponCardList
-          title="Coupons"
-          items={[
-            { name: 'Coupon Name 1', progress: 25 , total : 100 },
-            { name: 'Coupon Name 2', progress: 75 , total : 100 },
-            { name: 'Coupon Name 3', progress: 55 , total : 100 }
-          ]}
-        />
-
-        <RecentActivity
-          data={activityData}
-        />
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <TodoList
-          tasks={[
-            { title: 'Update course schedules', date: '2025-06-18' },
-            { title: 'Verify student invoices', date: '2025-06-17' },
-            { title: 'Schedule webinar', date: '2025-06-20', done: true }
-          ]}
-        />
-      <Schedules events={scheduleData} />
-
-      </div>
-
-      {/* Row 5: Calendar Box */}
-      <CalendarScheduleBox
-        dateRange={{ start: '2025-06-24', end: '2025-06-30' }}
-        events={[
-          { type: 'Sales Webinar', time: '10am - 11am' },
-          { type: 'Walkthrough Session', time: '1pm - 2pm' },
-          { type: 'Final Review', time: '3pm - 4pm' }
+    {/* Activity Cards */}
+    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6">
+      <InvoiceCardList
+        title="Invoices"
+        items={[
+          {
+            name: 'Student Name 1',
+            university: 'ABC University',
+            id: '#123456',
+            department: 'Computer Science',
+            invoiceNo: 'KD 983',
+            status: 'Pending'
+          },
+          {
+            name: 'Student Name 2',
+            university: 'XYZ University',
+            id: '#789012',
+            department: 'Accounting',
+            invoiceNo: 'KD 984',
+            status: 'Paid'
+          },
+          {
+            name: 'Student Name 3',
+            university: 'LMN University',
+            id: '#456789',
+            department: 'Business',
+            invoiceNo: 'KD 985',
+            status: 'Pending'
+          }
         ]}
       />
 
+      <CouponCardList
+        title="Coupons"
+        items={[
+          { name: 'Coupon Name 1', progress: 25, total: 100 },
+          { name: 'Coupon Name 2', progress: 75, total: 100 },
+          { name: 'Coupon Name 3', progress: 55, total: 100 }
+        ]}
+      />
+
+      <RecentActivity data={activityData} />
     </div>
-  );
+
+    {/* Todo and Schedule */}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+      <TodoList
+        tasks={[
+          { title: 'Update course schedules', date: '2025-06-18' },
+          { title: 'Verify student invoices', date: '2025-06-17' },
+          { title: 'Schedule webinar', date: '2025-06-20', done: true }
+        ]}
+      />
+      <Schedules events={scheduleData} />
+    </div>
+  </div>
+);
 }

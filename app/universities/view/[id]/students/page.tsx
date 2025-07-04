@@ -1,10 +1,19 @@
 // app/universities/view/[id]/students/page.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-import UniversitiesTable from "@/app/universities/UniversitiesTable";
+import GenericTable from "@/app/components/table/GenericTable";
 import { MoreHorizontal } from "lucide-react";
 
-const studentsData = [
+interface Student {
+  id: number;
+  name: string;
+  department: string;
+  purchaseCourses: number;
+  mobile: string;
+  status: boolean;
+}
+
+const studentsData: Student[] = [
   { id: 1, name: "Sara Alsannat", department: "Biomedical", purchaseCourses: 6, mobile: "99820270", status: false },
   { id: 2, name: "Fay Alqabandi", department: "Civil", purchaseCourses: 6, mobile: "50274784", status: true },
   { id: 3, name: "Latifa Meshal", department: "Biomedical", purchaseCourses: 6, mobile: "50941465", status: false },
@@ -48,62 +57,61 @@ export default function StudentsPage() {
     setOpenDropdown(null);
   };
 
-  const renderRow = (s: typeof studentsData[0], idx: number) => (
-    <tr key={s.id} className="border-b border-gray-100 hover:bg-gray-50">
-      <td className="px-6 py-4">{s.name}</td>
-      <td className="px-6 py-4">{s.department}</td>
-      <td className="px-6 py-4">{s.purchaseCourses}</td>
-      <td className="px-6 py-4">{s.mobile}</td>
-      <td className="px-6 py-4">
-        <input type="checkbox" checked={s.status} readOnly className="accent-blue-900" />
-      </td>
-      <td className="px-6 py-4 text-center relative">
-        <button
-          onClick={() => setOpenDropdown(openDropdown === s.id ? null : s.id)}
-          className="p-1 hover:bg-gray-200 rounded-full"
-        >
-          <MoreHorizontal className="h-5 w-5 text-gray-500" />
-        </button>
-        {openDropdown === s.id && (
-          <div
-            ref={dropdownRef}
-            className="absolute right-0 mt-2 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg z-20 py-2 flex flex-col items-stretch"
-            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
-          >
-            <button
-              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle edit here */}}
-            >
-              Edit
-            </button>
-            <button
-              className="px-4 py-2 text-left text-red-600 hover:bg-red-50 transition"
-              onClick={e => {
-                e.preventDefault();
-                if (window.confirm('Are you sure you want to delete this item?')) {
-                  handleDelete(s.id);
-                }
-              }}
-            >
-              Delete
-            </button>
-            <button
-              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle view here */}}
-            >
-              View
-            </button>
-          </div>
-        )}
-      </td>
-    </tr>
-  );
-
   return (
-    <UniversitiesTable
+    <GenericTable<Student>
       columns={columns}
       data={filtered}
-      renderRow={renderRow}
+      renderRow={(student) => {
+        const isDropdownOpen = openDropdown === student.id;
+        return (
+          <tr key={student.id} className="border-t hover:bg-gray-50">
+            <td className="px-2 py-2 sm:px-4 sm:py-3">
+              <span className="text-xs sm:text-sm font-medium">{student.name}</span>
+            </td>
+            <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{student.department}</td>
+            <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{student.purchaseCourses}</td>
+            <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{student.mobile}</td>
+            <td className="px-2 py-2 sm:px-4 sm:py-3">
+              <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                student.status ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+              }`}>
+                {student.status ? "Active" : "Inactive"}
+              </span>
+            </td>
+            <td className="px-2 py-2 sm:px-4 sm:py-3 relative text-right">
+              <button
+                onClick={() => setOpenDropdown(isDropdownOpen ? null : student.id)}
+                className="inline-flex items-center justify-center p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                aria-label="Actions"
+              >
+                <MoreHorizontal size={14} className="sm:w-4 sm:h-4 text-gray-500" />
+              </button>
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
+                  <button
+                    className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                    onClick={() => {/* Handle edit */}}
+                  >
+                    <span>Edit</span>
+                  </button>
+                  <button
+                    className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2"
+                    onClick={() => handleDelete(student.id)}
+                  >
+                    <span>Delete</span>
+                  </button>
+                  <button
+                    className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                    onClick={() => {/* Handle view */}}
+                  >
+                    <span>View</span>
+                  </button>
+                </div>
+              )}
+            </td>
+          </tr>
+        );
+      }}
       onSearch={handleSearch}
       searchPlaceholder="Search Student"
     />

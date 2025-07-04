@@ -1,15 +1,13 @@
-// app/universities/view/[id]/categories/page.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
 import UniversitiesTable from "@/app/universities/UniversitiesTable";
-import { MoreHorizontal, Calculator, Atom, BookOpen, Monitor } from "lucide-react";
+import { MoreHorizontal, Calculator, Atom, BookOpen, Monitor, Link } from "lucide-react";
 
 const categoriesData = [
   { id: 1, icon: <Calculator />, name: "Math", totalCourses: 23 },
   { id: 2, icon: <Atom />, name: "Physics", totalCourses: 23 },
   { id: 3, icon: <BookOpen />, name: "English", totalCourses: 23 },
   { id: 4, icon: <Monitor />, name: "Computer", totalCourses: 23 },
-  // ...more
 ];
 
 export default function CategoriesPage() {
@@ -17,22 +15,7 @@ export default function CategoriesPage() {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setOpenDropdown(null);
-      }
-    }
-    if (openDropdown !== null) {
-      document.addEventListener("mousedown", handleClickOutside);
-    }
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [openDropdown]);
+
 
   const columns = ["Swap", "Category Name", "Total Courses", "Action"];
 
@@ -97,6 +80,18 @@ export default function CategoriesPage() {
   );
 
   return (
+
+    <div>
+    <div className="flex justify-end mb-4">
+
+    <Link
+    href={`/universities/departments-management/add`}
+    className="px-4 py-2 bg-blue-900 text-white rounded text-sm hover:bg-blue-800"
+  >
+    Add Category
+  </Link>
+  </div>
+
     <UniversitiesTable
       columns={columns}
       data={filtered}
@@ -104,5 +99,8 @@ export default function CategoriesPage() {
       onSearch={handleSearch}
       searchPlaceholder="Search Category"
     />
+    </div>
+
+
   );
 }

@@ -20,7 +20,7 @@ type FormProps = {
   cancelLabel?: string;
   onCancel?: () => void;
   className?: string;
-  gridCols?: 1 | 2 | 3;
+  gridCols?: 1 | 2 | 3 | 4;
 };
 
 export default function Form({
@@ -35,9 +35,10 @@ export default function Form({
 }: FormProps) {
   const gridClass = {
     1: 'grid-cols-1',
-    2: 'grid-cols-2',
-    3: 'grid-cols-3'
-  }[gridCols];
+    2: 'grid-cols-1 md:grid-cols-2',
+    3: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-3',
+    4: 'grid-cols-1 md:grid-cols-2 lg:grid-cols-4'
+  }[gridCols] || 'grid-cols-1 md:grid-cols-2';
 
   const renderField = (field: FormField) => {
     const commonProps = {
@@ -85,11 +86,11 @@ export default function Form({
   };
 
   return (
-    <form onSubmit={onSubmit} className={className}>
-      <div className={`grid ${gridClass} gap-6 mb-6`}>
+    <form onSubmit={onSubmit} className={`space-y-6 ${className}`}>
+      <div className={`grid ${gridClass} gap-4 sm:gap-6`}>
         {fields.map((field) => (
-          <div key={field.name}>
-            <label htmlFor={field.name} className="block text-sm font-medium text-gray-700 mb-1">
+          <div key={field.name} className="space-y-1.5">
+            <label htmlFor={field.name} className="block text-sm font-medium text-gray-700">
               {field.label}
               {field.required && <span className="text-red-500 ml-1">*</span>}
             </label>
@@ -98,19 +99,21 @@ export default function Form({
         ))}
       </div>
       
-      <div className="flex justify-end gap-4">
+      <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
         {onCancel && (
           <Button
             label={cancelLabel}
             variant="secondary"
             onClick={onCancel}
             type="button"
+            fullWidth
           />
         )}
         <Button
           label={submitLabel}
           variant="primary"
           type="submit"
+          fullWidth
         />
       </div>
     </form>

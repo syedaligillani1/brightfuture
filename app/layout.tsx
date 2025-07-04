@@ -1,11 +1,6 @@
+'use client';
 import './globals.css';
-import Sidebar from './components/Sidebar';
-import type { Metadata } from 'next';
-
-export const metadata: Metadata = {
-  title: 'University Dashboard',
-  description: 'Admin portal',
-};
+import ResponsiveLayout from './components/ResponsiveLayout';
 
 export default function RootLayout({
   children,
@@ -13,10 +8,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="flex">
-        <Sidebar />
-        <main className="flex-1 bg-gray-200 p-6">{children}</main>
+    <html lang="en" className="h-full">
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Bright Future</title>
+      </head>
+      <body className="h-full">
+        <ResponsiveLayout>{children}</ResponsiveLayout>
       </body>
     </html>
   );

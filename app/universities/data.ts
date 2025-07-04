@@ -1,8 +1,9 @@
 export const universityColumns = [
-    "Name", "Departments", "Instructors", "Courses", "Total Students", "Enrolled Student", "Status", ""
+    "Name", "Departments", "Instructors", "Courses", "Total Students", "Enrolled Student", "Status", "Action"
 ];
 
 export type University = {
+    originalName?: string;
     name: string;
     departments: number;
     instructors: number;
@@ -10,6 +11,7 @@ export type University = {
     totalStudents: number;
     enrolledStudents: number;
     status: "Active" | "Inactive";
+    logo?: string; // Optional logo property
 };
 
 export const universityData: University[] = [
@@ -47,7 +49,7 @@ export const universityData: University[] = [
         courses: 60,
         totalStudents: 800,
         enrolledStudents: 650,
-        status: "Active",
+        status: "Inactive",
     },
     {
         name: "Gulf University for Science and Technology",

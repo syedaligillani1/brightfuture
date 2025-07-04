@@ -1,13 +1,34 @@
-"use client";
 import { useState } from "react";
+import PaginationInfo from "./PaginationInfo";
+import TableTabs from "./TableTabs";
+import TableSearch from "./TableSearch";
+import DataTable from "./DataTable";
 
-import { TableProps } from "./types";
-import PaginationInfo from "./components/PaginationInfo";
-import TableTabs from "./components/TableTabs";
-import TableSearch from "./components/TableSearch";
-import DataTable from "./components/DataTable";
+export interface TableSearchProps {
+  value: string;
+  onChange: (value: string) => void;
+  placeholder?: string;
+}
 
-export default function UniversitiesTable<T>({
+export interface DataTableProps<T> {
+  columns: string[];
+  data: T[];
+  renderRow: (item: T) => React.ReactNode;
+}
+
+export interface TableProps<T> {
+  columns: string[];
+  data: T[];
+  tabs?: string[];
+  searchPlaceholder?: string;
+  renderRow: (item: T) => React.ReactNode;
+  onAddNew?: () => void;
+  onSearch?: (query: string) => void;
+  activeTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export default function GenericTable<T>({
   columns,
   data,
   tabs = [],
@@ -17,11 +38,7 @@ export default function UniversitiesTable<T>({
   onSearch,
   activeTab: controlledActiveTab,
   onTabChange,
-}: TableProps<T> & {
-  onSearch: (query: string) => void,
-  activeTab?: string,
-  onTabChange?: (tab: string) => void
-}) {
+}: TableProps<T>) {
   const [internalActiveTab, setInternalActiveTab] = useState(tabs[0] || "");
   const [search, setSearch] = useState("");
 
@@ -52,39 +69,4 @@ export default function UniversitiesTable<T>({
       </div>
     </div>
   );
-}
-
-export interface TableSearchProps {
-  value: string;
-  onChange: (value: string) => void;
-  placeholder?: string;
-}
-
-export interface DataTableProps<T> {
-  columns: string[];
-  data: T[];
-  renderRow: (item: T) => React.ReactNode;
-}
-
-export interface TableProps<T> {
-  columns: string[];
-  data: T[];
-  tabs?: string[];
-  searchPlaceholder?: string;
-  renderRow: (item: T) => React.ReactNode;
-  onAddNew?: () => void;
-  onSearch?: (query: string) => void;
-  activeTab?: string;
-  onTabChange?: (tab: string) => void;
-}
-
-export interface University {
-  name: string;
-  logo: string;
-  departments: number;
-  instructors: number;
-  courses: number;
-  totalStudents: number;
-  enrolledStudents: number;
-  status: 'Active' | 'Inactive';
-}
+} 

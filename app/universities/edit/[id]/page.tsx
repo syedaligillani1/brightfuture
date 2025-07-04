@@ -1,208 +1,232 @@
 'use client';
-import { useState, useEffect } from 'react';
+
+import React from 'react';
+import { useState, useEffect, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { universityData, University } from '../../data';
-import Button from '../../../utility/Button';
-import Card from '../../../utility/Card';
-import Tabs from '../../../utility/Tabs';
+import { University } from '../../data';
 
-type TabType = 'general' | 'departments' | 'instructors' | 'students' | 'courses' | 'settings';
-
-export default function EditUniversityPage({ params }: { params: { id: string } }) {
+export default function EditUniversityPage({ params }: { params: Promise<{ id: string }> }) {
+  const resolvedParams = React.use(params);
   const router = useRouter();
-  const [university, setUniversity] = useState<University | null>(null);
-  const [activeTab, setActiveTab] = useState<TabType>('general');
+  const [name, setName] = useState<string>('');
+  const [deviceLimit, setDeviceLimit] = useState<string>('');
+  const [logo, setLogo] = useState<File | null>(null);
+  const [status, setStatus] = useState<'Active' | 'Inactive'>('Active');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentUniversity, setCurrentUniversity] = useState<University | null>(null);
+  const [originalName, setOriginalName] = useState<string>('');
 
   useEffect(() => {
-    const universityName = decodeURIComponent(params.id);
-    const foundUniversity = universityData.find(u => u.name === universityName);
-    if (foundUniversity) {
-      setUniversity(foundUniversity);
-    }
-  }, [params.id]);
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    if (university) {
-      setUniversity({ ...university, [e.target.name]: e.target.value });
-    }
-  };
-
-  const handleSaveChanges = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (university) {
-      // Here you would typically save to a backend.
-      // For now, we'll just navigate back with a query param to trigger a refresh.
-      const originalName = decodeURIComponent(params.id);
-      // This is a mock update. In a real app, you'd get the updated data from a backend.
-      // We are modifying the mock data directly here for demonstration.
-      const index = universityData.findIndex(u => u.name === originalName);
-      if(index !== -1) {
-        universityData[index] = university;
+    const fetchUniversity = async () => {
+      try {
+        const universityName = decodeURIComponent(resolvedParams.id);
+        setOriginalName(universityName);
+        
+        const response = await fetch('/api/universities');
+        if (!response.ok) {
+          throw new Error('Failed to fetch university data');
+        }
+        
+        const universities: University[] = await response.json();
+        const foundUniversity = universities.find(u => u.name === universityName);
+        
+        if (foundUniversity) {
+          setCurrentUniversity(foundUniversity);
+          setName(foundUniversity.name);
+          setDeviceLimit(String(foundUniversity.departments));
+          setStatus(foundUniversity.status);
+        } else {
+          throw new Error('University not found');
+        }
+      } catch (error) {
+        console.error('Error fetching university:', error);
+        setError(error instanceof Error ? error.message : 'Failed to load university data');
+      } finally {
+        setIsLoading(false);
       }
-      
-      router.push(`/universities?editedName=${encodeURIComponent(university.name)}`);
+    };
+
+    fetchUniversity();
+  }, [resolvedParams.id]);
+
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    if (!name || !deviceLimit) {
+      alert('Please fill in all fields.');
+      return;
     }
-  };
 
-  const handleTabChange = (tabKey: string) => {
-    setActiveTab(tabKey as TabType);
-  };
+    setIsSubmitting(true);
+    try {
+      const updatedUniversity: University = {
+        name,
+        logo: currentUniversity?.logo || '/logo.png',
+        departments: Number(deviceLimit),
+        instructors: currentUniversity?.instructors || 0,
+        courses: currentUniversity?.courses || 0,
+        totalStudents: currentUniversity?.totalStudents || 0,
+        enrolledStudents: currentUniversity?.enrolledStudents || 0,
+        status,
+      };
 
-  const renderTabContent = () => {
-    switch (activeTab) {
-      case 'general':
-        return (
-          <form onSubmit={handleSaveChanges}>
-            <div className="grid grid-cols-2 gap-8 mb-6">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
-                <input type="text" id="name" name="name" value={university?.name || ''} onChange={handleInputChange} className="w-full border-gray-300 rounded-md shadow-sm" />
-              </div>
-              <div>
-                <label htmlFor="deviceLimit" className="block text-sm font-medium text-gray-700 mb-1">Device Limit</label>
-                <select id="deviceLimit" name="departments" value={university?.departments || ''} onChange={handleInputChange} className="w-full border-gray-300 rounded-md shadow-sm">
-                  <option>5</option>
-                  <option>8</option>
-                  <option>10</option>
-                  <option>12</option>
-                  <option>15</option>
-                </select>
-              </div>
-            </div>
-            <div className="mb-6">
-              <p className="block text-sm font-medium text-gray-700 mb-1">University Logo</p>
-              <div className="flex items-center gap-4">
-                <div className="w-1/2 border-2 border-dashed border-gray-300 rounded-md p-6 text-center">
-                  <p className="text-gray-500">Upload Logo</p>
-                </div>
-                <div className="w-1/2 flex justify-center">
-                  <img src="/logo.png" alt="logo" className="h-24 w-24" />
-                </div>
-              </div>
-            </div>
-            <div className="flex justify-end gap-4">
-              <Button 
-                label="Cancel" 
-                variant="secondary" 
-                onClick={() => router.back()} 
-              />
-              <Button 
-                label="Save Changes" 
-                variant="primary" 
-                type="submit" 
-              />
-            </div>
-          </form>
-        );
-      case 'departments':
-        return (
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">Departments Management</h3>
-            <p className="text-gray-600 mb-4">This page will contain departments management functionality.</p>
-            <Button 
-              label="Go to Departments" 
-              variant="primary" 
-              onClick={() => router.push('/departments')} 
-            />
-          </div>
-        );
-      case 'instructors':
-        return (
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">Instructors Management</h3>
-            <p className="text-gray-600 mb-4">This page will contain instructors management functionality.</p>
-            <Button 
-              label="Go to Instructors" 
-              variant="primary" 
-              onClick={() => router.push('/instructors')} 
-            />
-          </div>
-        );
-      case 'students':
-        return (
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">Students Management</h3>
-            <p className="text-gray-600 mb-4">This page will contain students management functionality.</p>
-            <Button 
-              label="Go to Students" 
-              variant="primary" 
-              onClick={() => router.push('/students')} 
-            />
-          </div>
-        );
-      case 'courses':
-        return (
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">Courses Management</h3>
-            <p className="text-gray-600 mb-4">This page will contain courses management functionality.</p>
-            <Button 
-              label="Go to Courses" 
-              variant="primary" 
-              onClick={() => router.push('/courses')} 
-            />
-          </div>
-        );
-      case 'settings':
-        return (
-          <div className="text-center py-8">
-            <h3 className="text-lg font-semibold mb-2">University Settings</h3>
-            <p className="text-gray-600 mb-4">This page will contain university settings and configuration.</p>
-            <Button 
-              label="Go to Settings" 
-              variant="primary" 
-              onClick={() => router.push('/settings')} 
-            />
-          </div>
-        );
-      default:
-        return null;
+      const response = await fetch(`/api/universities?originalName=${encodeURIComponent(originalName)}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updatedUniversity),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to update university');
+      }
+
+      router.push(`/universities?edited=${encodeURIComponent(name)}`);
+      router.refresh();
+    } catch (error) {
+      console.error('Error updating university:', error);
+      alert('Failed to update university. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
-  };
-
-  if (!university) {
-    return <div>Loading...</div>;
   }
 
-  const tabs = [
-    { key: 'general', label: 'General Info' },
-    { key: 'departments', label: 'Departments' },
-    { key: 'instructors', label: 'Instructors' },
-    { key: 'students', label: 'Students' },
-    { key: 'courses', label: 'Courses' },
-    { key: 'settings', label: 'Settings' }
-  ];
+
+  function handleLogoChange(e: ChangeEvent<HTMLInputElement>) {
+    if (e.target.files && e.target.files.length > 0) {
+      setLogo(e.target.files[0]);
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen p-8">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          <h2 className="text-lg font-semibold mb-2">Error</h2>
+          <p>{error}</p>
+          <button
+            onClick={() => router.push('/universities')}
+            className="mt-4 text-sm text-red-600 hover:text-red-800 underline"
+          >
+            Return to Universities
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!currentUniversity) {
+    return (
+      <div className="min-h-screen p-8">
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 text-yellow-700">
+          <h2 className="text-lg font-semibold mb-2">University Not Found</h2>
+          <p>The university you're trying to edit could not be found.</p>
+          <button
+            onClick={() => router.push('/universities')}
+            className="mt-4 text-sm text-yellow-600 hover:text-yellow-800 underline"
+          >
+            Return to Universities
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Universities / <span className="text-gray-500">Edit University</span></h1>
-      
-      <Card
-        title="Edit University"
-        variant="elevated"
-        headerActions={
-          <div className="flex items-center">
-            <span className="mr-2">Status</span>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" name="status" checked={university.status === 'Active'} onChange={(e) => {
-                  if (university) {
-                    setUniversity({ ...university, status: e.target.checked ? 'Active' : 'Inactive' });
-                  }
-              }} className="sr-only peer" />
-              <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-            </label>
+    <div className="bg-gray-50 min-h-screen p-8">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold">Universities / <span className="text-gray-500">Edit University</span></h1>
+      </header>
+      <div className="bg-white rounded-lg p-6 shadow-md">
+        <h2 className="text-xl font-semibold mb-6">Edit University</h2>
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label className="block mb-1 text-sm font-medium">Name</label>
+            <input
+              type="text"
+              placeholder="Enter University Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full border rounded p-2 text-sm"
+              disabled={isSubmitting}
+            />
           </div>
-        }
-      >
-        <Tabs
-          tabs={tabs}
-          activeTab={activeTab}
-          onTabChange={handleTabChange}
-          variant="default"
-          className="mb-6"
-        />
-        
-        {renderTabContent()}
-      </Card>
+          <div>
+            <label className="block mb-1 text-sm font-medium">Device Limit</label>
+            <select
+              value={deviceLimit}
+              onChange={(e) => setDeviceLimit(e.target.value)}
+              className="w-full border rounded p-2 text-sm"
+              disabled={isSubmitting}
+            >
+              <option value="">Select</option>
+              <option value="1">1 Device</option>
+              <option value="5">5 Devices</option>
+              <option value="10">10 Devices</option>
+            </select>
+          </div>
+          <div>
+            <label className="block mb-1 text-sm font-medium">Status</label>
+            <select
+              value={status}
+              onChange={(e) => setStatus(e.target.value as 'Active' | 'Inactive')}
+              className="w-full border rounded p-2 text-sm"
+              disabled={isSubmitting}
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+          <div>
+            <label className="block mb-2 text-sm font-medium">University Logo</label>
+            <div className="border border-dashed border-gray-300 p-6 rounded flex flex-col items-center justify-center text-center">
+              <label htmlFor="logo-upload" className="cursor-pointer">
+                <div className="text-blue-800 font-bold text-sm">Upload Logo</div>
+              </label>
+              <input
+                id="logo-upload"
+                type="file"
+                className="hidden"
+                accept="image/*"
+                onChange={handleLogoChange}
+                disabled={isSubmitting}
+              />
+              {currentUniversity?.logo && (
+                <div className="mt-4">
+                  <img src={currentUniversity.logo} alt="University logo" className="h-20 w-20 object-contain" />
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="flex justify-end gap-3 mt-4">
+            <button
+              type="button"
+              onClick={() => router.push('/universities')}
+              className="border border-red-500 text-red-500 px-4 py-2 rounded text-sm hover:bg-red-50"
+              disabled={isSubmitting}
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              className="bg-blue-900 text-white px-4 py-2 rounded text-sm hover:bg-blue-800 disabled:bg-blue-300"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'Saving...' : 'Save Changes'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 } 

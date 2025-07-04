@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Computer Science",
+    "logo": "/logo.png",
+    "totalCourses": 25,
+    "totalInstructors": 12,
+    "totalStudents": 450,
+    "enrolledStudents": 380,
+    "conversion": 84
+  },
+  {
+    "id": 2,
+    "name": "Civil Engineering",
+    "logo": "/logo.png",
+    "totalCourses": 30,
+    "totalInstructors": 15,
+    "totalStudents": 380,
+    "enrolledStudents": 320,
+    "conversion": 84
+  },
+  {
+    "id": 3,
+    "name": "Biomedical Engineering",
+    "logo": "/logo.png",
+    "totalCourses": 28,
+    "totalInstructors": 14,
+    "totalStudents": 300,
+    "enrolledStudents": 250,
+    "conversion": 83
+  },
+  {
+    "name": "Civil",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "id": "4"
+  },
+  {
+    "name": "maths",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "id": 5
+  }
+]
