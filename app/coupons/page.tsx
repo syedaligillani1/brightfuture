@@ -118,6 +118,7 @@ export default function DepartmentForm() {
       <CancelButton
         label='Cancel'
         onClick={handleCancel}
+        className=' bg-red-300'
 
       />
 
