@@ -39,10 +39,11 @@ export default function InputField({
                 onChange={onChange}
                 placeholder={placeholder}
                 required={required}
-                className={`w-full rounded-lg px-4 py-2 text-sm sm:text-base border outline-none 
-        ${error ? 'border-red-500 focus:ring-2 focus:ring-red-500' : ''}
-        ${success && !error ? 'border-green-500 focus:ring-2 focus:ring-green-500' : ''}
-      `}
+                className={`w-full rounded-lg px-4 py-2 text-sm sm:text-base border outline-none transition
+                ${error === true ? 'border-red-500 focus:ring-2 focus:ring-red-500' : ''}
+                ${success === true && !error ? 'border-green-500 focus:ring-2 focus:ring-green-500' : ''}
+                ${!error && success !== true ? 'border-gray-300 focus:ring-2 focus:ring-blue-500' : ''}
+`}
             />
         </div>
     )

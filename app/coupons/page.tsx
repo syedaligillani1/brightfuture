@@ -79,7 +79,8 @@ export default function DepartmentForm() {
 
       <br />
       <br />
-      <PrimaryButton label="Submit" onClick={handleSubmit} />
+      <PrimaryButton label="Submit" onClick={handleSubmit}
+      className='bg-black' />
 
       <br />
       <br />
@@ -111,6 +112,7 @@ export default function DepartmentForm() {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder='Add Description'
+        rows={5}
       />
 
       <br />

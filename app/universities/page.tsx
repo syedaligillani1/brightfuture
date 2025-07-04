@@ -6,9 +6,9 @@ import data from '../components/data.json';
 import RevenueChart from '../components/RevenueChart';
 import OverviewChart from '../components/Overview';
 import GenericTable from "../components/table/GenericTable";
-import { useRouter, useSearchParams } from "next/navigation"; 
+import { useRouter } from "next/navigation"; 
 import { universityColumns, University } from "./data";
-
+import { ENDPOINTS } from "../api/url/endpoints";
 
 
 const iconMap: Record<string, React.ComponentType<any>> = {
@@ -30,16 +30,14 @@ export default function Universities() {
 
 
   const router = useRouter();
-  // const searchParams = useSearchParams();
 
   const fetchUniversities = async () => {
     try {
-      const response = await fetch('/api/universities');
+      const response = await fetch(ENDPOINTS.UNIVERSITIES); // ✅ replaced
       if (!response.ok) {
         throw new Error('Failed to fetch universities');
       }
       const data = await response.json();
-      console.log(data);
       
       setTableRows(data);
       setOriginalData(data);
@@ -51,7 +49,6 @@ export default function Universities() {
   };
 
   useEffect(() => {
-    console.log('Effect runs');
     fetchUniversities();
   }, []);
 
@@ -80,8 +77,8 @@ export default function Universities() {
     }
 
     try {
-      const response = await fetch(`/api/universities?name=${encodeURIComponent(universityToDelete.name)}`, {
-        method: 'DELETE',
+      const response = await fetch(`${ENDPOINTS.UNIVERSITIES}?name=${encodeURIComponent(universityToDelete.name)}`, {
+  method: 'DELETE',
       });
 
       if (!response.ok) {
@@ -218,16 +215,3 @@ export default function Universities() {
     </div>
   )
 }
-
-
-
-
-// add/page
-// pass newly created data to the previous page to avoid rerendering
-// in the prev page add 2 checks 1:- added
-// if we added a neww record push that data into original state
-
-//  2:-edited 
-// if edited then modify existed 
-
-// remove the extra fetch 
