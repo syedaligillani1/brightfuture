@@ -63,5 +63,25 @@
     "totalStudents": 0,
     "enrolledStudents": 0,
     "status": "Active"
+  },
+  {
+    "name": "hello",
+    "logo": "/logo.png",
+    "departments": 1,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "ssss",
+    "logo": "/logo.png",
+    "departments": 10,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
   }
 ]

@@ -2,6 +2,9 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
+
 
 export default function AddNewUniversityPage() {
   const router = useRouter();
@@ -123,21 +126,19 @@ export default function AddNewUniversityPage() {
             </div>
           </div>
           <div className="flex justify-end gap-3 mt-4">
-            <button
-              type="button"
+            <CancelButton
+              label="Cancel"
               onClick={() => router.push('/universities')}
-              className="border border-red-500 text-red-500 px-4 py-2 rounded text-sm hover:bg-red-50"
+              className="px-4 py-2 text-sm"
+              type="button"
               disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
+            />
+            <PrimaryButton
+              label={isSubmitting ? 'Creating...' : 'Create University'}
+              className="px-4 py-2 text-sm"
               type="submit"
-              className="bg-blue-900 text-white px-4 py-2 rounded text-sm hover:bg-blue-800 disabled:bg-blue-300"
               disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Creating...' : 'Create University'}
-            </button>
+            />
           </div>
         </form>
       </div>

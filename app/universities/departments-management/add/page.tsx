@@ -2,6 +2,9 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
+
 
 export default function AddDepartmentPage() {
   const router = useRouter();
@@ -130,21 +133,19 @@ export default function AddDepartmentPage() {
           </div>
 
           <div className="flex justify-end gap-4 pt-4">
-            <button
-              type="button"
+            <CancelButton
+              label="Cancel"
               onClick={() => router.back()}
-              className="px-6 py-2 border border-red-500 text-red-500 rounded text-sm hover:bg-red-50"
+              className="px-6 py-2 text-sm"
+              type="button"
               disabled={isSubmitting}
-            >
-              Cancel
-            </button>
-            <button
+            />
+            <PrimaryButton
+              label={isSubmitting ? 'Adding...' : 'Add Department'}
+              className="px-6 py-2 text-sm"
               type="submit"
-              className="px-6 py-2 bg-blue-900 text-white rounded text-sm hover:bg-blue-800 disabled:bg-blue-300"
               disabled={isSubmitting}
-            >
-              {isSubmitting ? 'Adding...' : 'Add Department'}
-            </button>
+            />
           </div>
         </form>
       </div>

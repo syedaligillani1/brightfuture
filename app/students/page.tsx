@@ -1,7 +1,8 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Card from '../utility/Card';
-import Button from '../utility/Button';
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
 
 export default function StudentsPage() {
   const router = useRouter();
@@ -10,10 +11,10 @@ export default function StudentsPage() {
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Students</h1>
-        <Button 
+        <PrimaryButton 
           label="Add Student" 
-          variant="primary" 
-          onClick={() => alert('Add Student functionality will be implemented here')} 
+          onClick={() => { /* add student logic */ }}
+          type="button"
         />
       </div>
 
@@ -41,15 +42,15 @@ export default function StudentsPage() {
               <li>• Generate student reports</li>
             </ul>
             <div className="flex gap-3 justify-center">
-              <Button 
+              <CancelButton 
                 label="Back to Universities" 
-                variant="secondary" 
                 onClick={() => router.push('/universities')} 
+                type="button"
               />
-              <Button 
+              <PrimaryButton 
                 label="Go to Courses" 
-                variant="primary" 
                 onClick={() => router.push('/courses')} 
+                type="button"
               />
             </div>
           </div>
