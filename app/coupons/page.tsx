@@ -79,7 +79,8 @@ export default function DepartmentForm() {
 
       <br />
       <br />
-      <PrimaryButton label="Submit" onClick={handleSubmit} />
+      <PrimaryButton label="Submit" onClick={handleSubmit}
+      className='bg-black' />
 
       <br />
       <br />
@@ -111,6 +112,7 @@ export default function DepartmentForm() {
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder='Add Description'
+        rows={5}
       />
 
       <br />
@@ -118,6 +120,7 @@ export default function DepartmentForm() {
       <CancelButton
         label='Cancel'
         onClick={handleCancel}
+        className=' bg-red-300'
 
       />
 
@@ -127,7 +130,7 @@ export default function DepartmentForm() {
         title="Are you sure you want to cancel?"
         description="This will discard all entered information."
         confirmLabel="Yes, Cancel"
-        cancelLabel="No, Go Back"
+        cancelLabel="Go Back"
         onConfirm={confirmCancel}
       />
 

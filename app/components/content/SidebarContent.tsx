@@ -10,7 +10,7 @@ export const menuItems = [
   { name: 'Instructor', href: '/instructors', icon: <UserPen size={18} className="stroke-current" /> },
   { name: 'Students', href: '/students', icon: <Users size={18} className="stroke-current" /> },
   { name: 'Courses', href: '/courses', icon: <BookText size={18} className="stroke-current" /> },
-  { name: 'Coupons', href: '/coupons', icon: <SwatchBook size={18} className="stroke-current" /> },
+  { name: 'UI', href: '/coupons', icon: <SwatchBook size={18} className="stroke-current" /> },
   { name: 'Invoices', href: '/invoices', icon: <Receipt size={18} className="stroke-current" /> },
   { name: 'Expense Management', href: '/expense', icon: <Clipboard size={18} className="stroke-current" /> },
   { name: 'Transaction History', href: '/transaction', icon: <Banknote size={18} className="stroke-current" /> },

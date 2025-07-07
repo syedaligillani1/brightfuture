@@ -47,7 +47,6 @@
     "status": "Inactive"
   },
   {
-    "name": "UCP",
     "logo": "/logo.png",
     "departments": 5,
     "instructors": 0,
@@ -57,35 +56,6 @@
     "status": "Active"
   },
   {
-    "logo": "/logo.png",
-    "departments": 5,
-    "instructors": 0,
-    "courses": 0,
-    "totalStudents": 0,
-    "enrolledStudents": 0,
-    "status": "Active"
-  },
-  {
-    "logo": "/logo.png",
-    "departments": 5,
-    "instructors": 0,
-    "courses": 0,
-    "totalStudents": 0,
-    "enrolledStudents": 0,
-    "status": "Active"
-  },
-  {
-    "name": "umtq",
-    "logo": "/logo.png",
-    "departments": 1,
-    "instructors": 0,
-    "courses": 0,
-    "totalStudents": 0,
-    "enrolledStudents": 0,
-    "status": "Active"
-  },
-  {
-    "name": "Waleed Uni",
     "logo": "/logo.png",
     "departments": 5,
     "instructors": 0,
