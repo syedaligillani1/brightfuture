@@ -4,6 +4,10 @@ import { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import PrimaryButton from '@/app/reused-Components /PrimaryButton';
 import CancelButton from '@/app/reused-Components /CancelButton';
+import InputField from '@/app/reused-Components /inputfield';
+import FileUploadField from '@/app/reused-Components /fileupload';
+import SelectBox from '@/app/reused-Components /selectbox';
+import ToggleBtn from '@/app/reused-Components /ToggleBtn';
 
 
 export default function AddNewUniversityPage() {
@@ -47,7 +51,7 @@ export default function AddNewUniversityPage() {
       }
 
       router.push('/universities?added=1');
-      router.refresh(); 
+      router.refresh();
     } catch (error) {
       console.error('Error adding university:', error);
       alert('Failed to add university. Please try again.');
@@ -71,60 +75,36 @@ export default function AddNewUniversityPage() {
         <h2 className="text-xl font-semibold mb-6">Add New University</h2>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <label className="block mb-1 text-sm font-medium">Name</label>
-              <input
-                type="text"
-                placeholder="Enter University Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="w-full border rounded p-2 text-sm"
-                disabled={isSubmitting}
-              />
-            </div>
-            <div>
-              <label className="block mb-1 text-sm font-medium">Device Limit</label>
-              <select
-                value={deviceLimit}
-                onChange={(e) => setDeviceLimit(e.target.value)}
-                className="w-full border rounded p-2 text-sm"
-                disabled={isSubmitting}
-              >
-                <option value="">Select</option>
-                <option value="1">1 Device</option>
-                <option value="5">5 Devices</option>
-                <option value="10">10 Devices</option>
-              </select>
-            </div>
-            <div>
-              <label className="block mb-1 text-sm font-medium">Status</label>
-              <select
-                value={status}
-                onChange={(e) => setStatus(e.target.value as 'Active' | 'Inactive')}
-                className="w-full border rounded p-2 text-sm"
-                disabled={isSubmitting}
-              >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
-              </select>
-            </div>
+            <InputField
+              label="Name"
+              name="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Enter University Name"
+              required
+            />
+            <SelectBox
+              label="Device Limit"
+              value={deviceLimit}
+              onChange={(e) => setDeviceLimit(e.target.value)}
+              options={[
+                { label: '1 Device', value: '1' },
+                { label: '5 Devices', value: '5' },
+                { label: '10 Devices', value: '10' },
+              ]}
+            />
+            <ToggleBtn
+              label="Status"
+              value={status === 'Active'}
+              onChange={(val) => setStatus(val ? 'Active' : 'Inactive')}
+            />
           </div>
-          <div>
-            <label className="block mb-2 text-sm font-medium">University Logo</label>
-            <div className="border border-dashed border-gray-300 p-6 rounded flex flex-col items-center justify-center text-center">
-              <label htmlFor="logo-upload" className="cursor-pointer">
-                <div className="text-blue-800 font-bold text-sm">Upload Logo</div>
-              </label>
-              <input
-                id="logo-upload"
-                type="file"
-                className="hidden"
-                accept="image/*"
-                onChange={handleLogoChange}
-                disabled={isSubmitting}
-              />
-            </div>
-          </div>
+          <FileUploadField
+            label="University Logo"
+            onChange={handleLogoChange}
+            accept="image/*"
+            disabled={isSubmitting}
+          />
           <div className="flex justify-end gap-3 mt-4">
             <CancelButton
               label="Cancel"

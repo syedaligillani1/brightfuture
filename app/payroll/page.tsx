@@ -2,11 +2,14 @@ import React, { useState, useEffect, useRef } from "react";
 import { MoreHorizontal } from 'lucide-react';
 import UniversitiesTable from "./UniversitiesTable";
 import { universityColumns, universityData, University } from "./data";
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import Modal from '@/app/reused-Components /Modal';
 
 export default function Universities() {
   const [tableRows, setTableRows] = useState<University[]>(universityData);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -106,7 +109,16 @@ export default function Universities() {
 
   return (
     <div className="p-6 space-y-6">
-      <button onClick={handleAddNew} className="bg-blue-900 text-white px-4 py-2 rounded float-right mb-2">Add New</button>
+      <PrimaryButton label="Add New" onClick={() => setModalOpen(true)} type="button" className="bg-blue-900 text-white px-4 py-2 rounded float-right mb-2" />
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Add New"
+        description="You clicked Add New button"
+        confirmLabel="OK"
+        cancelLabel=""
+        onConfirm={() => setModalOpen(false)}
+      />
       <UniversitiesTable
         columns={columns}
         data={tableRows}

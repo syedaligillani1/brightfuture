@@ -1,21 +1,34 @@
 'use client';
 import { useRouter } from 'next/navigation';
 import Card from '../utility/Card';
-import Button from '../utility/Button';
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
+import Modal from '@/app/reused-Components /Modal';
+import { useState } from 'react';
 
 export default function CoursesPage() {
+  const [modalOpen, setModalOpen] = useState(false);
   const router = useRouter();
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Courses</h1>
-        <Button 
+        <PrimaryButton 
           label="Add Course" 
-          variant="primary" 
-          onClick={() => alert('Add Course functionality will be implemented here')} 
+          onClick={() => setModalOpen(true)} 
+          type="button"
         />
       </div>
+      <Modal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        title="Add Course"
+        description="You clicked Add Course button"
+        confirmLabel="OK"
+        cancelLabel=""
+        onConfirm={() => setModalOpen(false)}
+      />
 
       <Card
         title="Courses Management"
@@ -41,15 +54,15 @@ export default function CoursesPage() {
               <li>• Handle course materials</li>
             </ul>
             <div className="flex gap-3 justify-center">
-              <Button 
+              <CancelButton 
                 label="Back to Universities" 
-                variant="secondary" 
                 onClick={() => router.push('/universities')} 
+                type="button"
               />
-              <Button 
+              <PrimaryButton 
                 label="Go to Settings" 
-                variant="primary" 
                 onClick={() => router.push('/settings')} 
+                type="button"
               />
             </div>
           </div>

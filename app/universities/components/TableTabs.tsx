@@ -1,4 +1,5 @@
 import { TableTabsProps } from "../types";
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
 
 export default function TableTabs({
   tabs,
@@ -7,31 +8,28 @@ export default function TableTabs({
   onAddNew,
 }: TableTabsProps) {
   return (
-    <div className="flex flex-wrap gap-2 mb-4">
-      <div className="flex flex-wrap gap-2 items-center w-full sm:w-auto">
+    <div className="flex flex-wrap items-center justify-between gap-4">
+      <div className="flex flex-wrap gap-2">
         {tabs.map((tab) => (
           <button
             key={tab}
             onClick={() => onTabClick(tab)}
-            className={`px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border-2 border-gray-300 text-xs whitespace-nowrap flex-shrink-0 ${
+            className={`px-3 py-1.5 text-sm font-medium rounded-lg transition-colors ${
               activeTab === tab
-                ? 'text-white'
-                : 'bg-white text-gray-800 hover:bg-gray-100'
+                ? "bg-blue-50 text-blue-600"
+                : "text-gray-500 hover:text-gray-700 hover:bg-gray-50"
             }`}
-            style={activeTab === tab ? { backgroundColor: '#094e85' } : {}}
           >
             {tab}
           </button>
         ))}
       </div>
       {onAddNew && (
-        <button
-          style={{ backgroundColor: '#094e85' }}
-          className="ml-auto text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded text-xs sm:text-sm whitespace-nowrap"
+        <PrimaryButton
+          label={<><span style={{marginRight: 4}}>+</span> Add New</>}
           onClick={onAddNew}
-        >
-          Add New
-        </button>
+          type="button"
+        />
       )}
     </div>
   );

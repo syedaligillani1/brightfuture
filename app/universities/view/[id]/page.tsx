@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
 
 export default function ViewUniversityPage({ params }: { params: { id: string } }) {
   const router = useRouter();
@@ -81,18 +83,16 @@ export default function ViewUniversityPage({ params }: { params: { id: string } 
           </div>
         </div>
         <div className="flex justify-end gap-3 mt-6">
-          <button
+          <CancelButton
+            label="Back to Universities"
             onClick={() => router.push('/universities')}
-            className="border border-gray-300 text-gray-700 px-4 py-2 rounded text-sm hover:bg-gray-50"
-          >
-            Back to Universities
-          </button>
-          <button
+            type="button"
+          />
+          <PrimaryButton
+            label="Edit University"
             onClick={() => router.push(`/universities/edit/${encodeURIComponent(university.name)}`)}
-            className="bg-blue-900 text-white px-4 py-2 rounded text-sm hover:bg-blue-800"
-          >
-            Edit University
-          </button>
+            type="button"
+          />
         </div>
       </div>
     </div>

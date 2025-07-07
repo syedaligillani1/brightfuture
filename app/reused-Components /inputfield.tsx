@@ -23,7 +23,7 @@ export default function InputField({
 }: InputFieldProps) {
 
     return (
-        <div className="w-full sm:w-1/2 lg:w-1/3 xl:w-1/4 px-2">
+        <div className="w-full sm:w-1/2 lg:w-1/ xl:w-1/ px-2">
             <label
                 htmlFor={name}
                 className="block text-sm sm:text-base font-medium text-gray-700 mb-1"

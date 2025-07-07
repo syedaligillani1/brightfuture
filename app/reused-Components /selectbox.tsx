@@ -1,6 +1,6 @@
 type SelectBoxProps = {
   label: string
-  options: string[]
+  options: { label: string; value: string }[]
   value: string
   onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
 }
@@ -24,8 +24,8 @@ export default function SelectBox({
       >
         <option value="">Select </option>
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
