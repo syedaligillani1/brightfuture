@@ -130,7 +130,7 @@ export default function DepartmentForm() {
         title="Are you sure you want to cancel?"
         description="This will discard all entered information."
         confirmLabel="Yes, Cancel"
-        cancelLabel="No, Go Back"
+        cancelLabel="Go Back"
         onConfirm={confirmCancel}
       />
 
