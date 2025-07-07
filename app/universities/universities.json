@@ -1,0 +1,67 @@
+[
+  {
+    "name": "Kuwait University",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 50,
+    "courses": 100,
+    "totalStudents": 1500,
+    "enrolledStudents": 1200,
+    "status": "Active"
+  },
+  {
+    "name": "American University of Kuwait",
+    "departments": 6,
+    "instructors": 25,
+    "courses": 60,
+    "totalStudents": 800,
+    "enrolledStudents": 650,
+    "status": "Active"
+  },
+  {
+    "name": "XYZ",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 10,
+    "courses": 19,
+    "totalStudents": 200,
+    "enrolledStudents": 150,
+    "status": "Active"
+  },
+  {
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Inactive"
+  },
+  {
+    "logo": "/logo.png",
+    "departments": 10,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Inactive"
+  },
+  {
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  }
+]

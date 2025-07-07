@@ -1,176 +1,183 @@
 "use client";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import UniversitiesTable from "@/app/universities/UniversitiesTable";
-import Button from "@/app/universities/components/button/Button";
-import {
-  FlaskConical,
-  Calculator,
-  BookOpen,
-  Beaker,
-  GraduationCap,
-  MoreHorizontal,
-} from "lucide-react";
+import { MoreHorizontal, Building2 } from "lucide-react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
 
-const departmentsData = [
-  {
-    id: 1,
-    name: "Science",
-    icon: <FlaskConical size={20} />,
-    totalCourses: 38,
-    totalInstructors: 6,
-    totalStudents: 150,
-    enrolledStudents: 10,
-    conversion: 30,
-  },
-  {
-    id: 2,
-    name: "Math",
-    icon: <Calculator size={20} />,
-    totalCourses: 42,
-    totalInstructors: 7,
-    totalStudents: 200,
-    enrolledStudents: 160,
-    conversion: 30,
-  },
-  {
-    id: 3,
-    name: "English",
-    icon: <BookOpen size={20} />,
-    totalCourses: 56,
-    totalInstructors: 9,
-    totalStudents: 500,
-    enrolledStudents: 350,
-    conversion: 30,
-  },
-  {
-    id: 4,
-    name: "Chemical",
-    icon: <Beaker size={20} />,
-    totalCourses: 38,
-    totalInstructors: 6,
-    totalStudents: 70,
-    enrolledStudents: 30,
-    conversion: 30,
-  },
-  {
-    id: 5,
-    name: "Chemistry",
-    icon: <GraduationCap size={20} />,
-    totalCourses: 42,
-    totalInstructors: 7,
-    totalStudents: 60,
-    enrolledStudents: 20,
-    conversion: 30,
-  },
-];
+interface Department {
+  id: number;
+  name: string;
+  logo: string;
+  totalCourses: number;
+  totalInstructors: number;
+  totalStudents: number;
+  enrolledStudents: number;
+  conversion: number;
+  universityId: string;
+}
 
 export default function DepartmentsPage() {
-  const [filteredData, setFilteredData] = useState(departmentsData);
+  const params = useParams();
+  const universityId = params.id as string;
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [filtered, setFiltered] = useState<Department[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    fetchDepartments();
+  }, [universityId]);
+
+  const fetchDepartments = async () => {
+    try {
+      const response = await fetch(`/api/departments?universityId=${encodeURIComponent(universityId)}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch departments');
+      }
+      const data = await response.json();
+      setDepartments(data);
+      setFiltered(data);
+    } catch (error) {
+      console.error('Error fetching departments:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setOpenDropdown(null);
+      }
+    }
+    if (openDropdown !== null) {
+      document.addEventListener("mousedown", handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [openDropdown]);
 
   const columns = [
-    "Name",
+    "Swap",
+    "Department Name",
     "Total Courses",
     "Total Instructors",
     "Total Students",
     "Enrolled Students",
     "Conversion",
-    "Action",
+    "Action"
   ];
 
-  const handleAddNew = () => {
-    console.log("Add new department");
-  };
-
   const handleSearch = (query: string) => {
-    const lowercasedQuery = query.toLowerCase();
-    const filtered = departmentsData.filter((department) =>
-      department.name.toLowerCase().includes(lowercasedQuery)
+    setFiltered(
+      departments.filter((dept) =>
+        dept.name.toLowerCase().includes(query.toLowerCase())
+      )
     );
-    setFilteredData(filtered);
   };
 
-  const renderRow = (department: (typeof departmentsData)[0], index: number) => {
-    const isDropdownOpen = openDropdown === department.id;
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/departments?id=${id}&universityId=${encodeURIComponent(universityId)}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to delete department');
+      }
 
-    return (
-      <tr
-        key={department.id}
-        className="border-b border-gray-100 hover:bg-gray-50"
-      >
-        <td className="px-6 py-4">
-          <div className="flex items-center gap-2">
-            {department.icon}
-            <span>{department.name}</span>
-          </div>
-        </td>
-        <td className="px-6 py-4">{department.totalCourses}</td>
-        <td className="px-6 py-4">{department.totalInstructors}</td>
-        <td className="px-6 py-4">{department.totalStudents}</td>
-        <td className="px-6 py-4">{department.enrolledStudents}</td>
-        <td className="px-6 py-4">
-          <div className="flex items-center gap-2">
-            <div className="w-24 bg-gray-200 rounded-full h-1.5">
-              <div
-                className="bg-blue-900 h-1.5 rounded-full"
-                style={{ width: `${department.conversion}%` }}
-              ></div>
-            </div>
-          </div>
-        </td>
-        <td className="px-6 py-4 text-center relative">
-          <button
-            onClick={() =>
-              setOpenDropdown(isDropdownOpen ? null : department.id)
-            }
-            className="p-1 hover:bg-gray-200 rounded-full"
+      setFiltered((prev) => prev.filter((dept) => dept.id !== id));
+      setDepartments((prev) => prev.filter((dept) => dept.id !== id));
+      setOpenDropdown(null);
+    } catch (error) {
+      console.error('Error deleting department:', error);
+      alert('Failed to delete department. Please try again.');
+    }
+  };
+
+  const renderRow = (dept: Department) => (
+    <tr key={dept.id} className="border-b border-gray-100 hover:bg-gray-50">
+      <td className="px-6 py-4"><span>↕️</span></td>
+      <td className="px-6 py-4 flex items-center gap-2">
+        <Building2 className="h-5 w-5" /> {dept.name}
+      </td>
+      <td className="px-6 py-4">{dept.totalCourses}</td>
+      <td className="px-6 py-4">{dept.totalInstructors}</td>
+      <td className="px-6 py-4">{dept.totalStudents}</td>
+      <td className="px-6 py-4">{dept.enrolledStudents}</td>
+      <td className="px-6 py-4">{dept.conversion}%</td>
+      <td className="px-6 py-4 text-center relative">
+        <button
+          onClick={() => setOpenDropdown(openDropdown === dept.id ? null : dept.id)}
+          className="p-1 hover:bg-gray-200 rounded-full"
+        >
+          <MoreHorizontal className="h-5 w-5 text-gray-500" />
+        </button>
+        {openDropdown === dept.id && (
+          <div
+            ref={dropdownRef}
+            className="absolute right-0 mt-2 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg z-20 py-2 flex flex-col items-stretch"
+            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
           >
-            <MoreHorizontal className="h-5 w-5 text-gray-500" />
-          </button>
-          {isDropdownOpen && (
-            <div className="absolute right-0 mt-2 w-28 bg-white rounded-md shadow-lg z-10 border">
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Edit
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                Delete
-              </a>
-              <a
-                href="#"
-                className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-              >
-                View
-              </a>
-            </div>
-          )}
-        </td>
-      </tr>
+            <button
+              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
+              onClick={() => {/* handle edit here */}}
+            >
+              Edit
+            </button>
+            <button
+              className="px-4 py-2 text-left text-red-600 hover:bg-red-50 transition"
+              onClick={e => {
+                e.preventDefault();
+                if (window.confirm('Are you sure you want to delete this item?')) {
+                  handleDelete(dept.id);
+                }
+              }}
+            >
+              Delete
+            </button>
+            <button
+              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
+              onClick={() => {/* handle view here */}}
+            >
+              View
+            </button>
+          </div>
+        )}
+      </td>
+    </tr>
+  );
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900"></div>
+      </div>
     );
-  };
+  }
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-xl font-semibold">All Departments</h2>
-        <div className="flex items-center gap-2">
-          <select className="border rounded-md px-3 py-2">
-            <option>Select department</option>
-          </select>
-          <Button label="Add New" onClick={handleAddNew} />
-        </div>
+      <div className="flex justify-end mb-4">
+        <Link
+          href={`/universities/departments-management/add?universityId=${encodeURIComponent(universityId)}`}
+          className="px-4 py-2 bg-blue-900 text-white rounded text-sm hover:bg-blue-800"
+        >
+          Add Department
+        </Link>
       </div>
       <UniversitiesTable
         columns={columns}
-        data={filteredData}
+        data={filtered}
         renderRow={renderRow}
         onSearch={handleSearch}
-        searchPlaceholder="Search University department"
+        searchPlaceholder="Search Department"
       />
     </div>
   );

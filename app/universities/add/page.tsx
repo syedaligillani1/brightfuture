@@ -8,15 +8,49 @@ export default function AddNewUniversityPage() {
   const [name, setName] = useState<string>('');
   const [deviceLimit, setDeviceLimit] = useState<string>('');
   const [logo, setLogo] = useState<File | null>(null);
+  const [status, setStatus] = useState<'Active' | 'Inactive'>('Active');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(e: FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!name || !deviceLimit) {
       alert('Please fill in all fields.');
       return;
     }
-    alert('University created!');
-    router.push('/universities');
+
+    setIsSubmitting(true);
+    try {
+      const newUniversity = {
+        name,
+        logo: '/logo.png',
+        departments: Number(deviceLimit), // Devices
+        instructors: 0,
+        courses: 0,
+        totalStudents: 0,
+        enrolledStudents: 0,
+        status,
+      };
+
+      const response = await fetch('/api/universities', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUniversity),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to add university');
+      }
+
+      router.push('/universities?added=1');
+      router.refresh(); 
+    } catch (error) {
+      console.error('Error adding university:', error);
+      alert('Failed to add university. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   function handleLogoChange(e: ChangeEvent<HTMLInputElement>) {
@@ -42,6 +76,7 @@ export default function AddNewUniversityPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 className="w-full border rounded p-2 text-sm"
+                disabled={isSubmitting}
               />
             </div>
             <div>
@@ -50,11 +85,24 @@ export default function AddNewUniversityPage() {
                 value={deviceLimit}
                 onChange={(e) => setDeviceLimit(e.target.value)}
                 className="w-full border rounded p-2 text-sm"
+                disabled={isSubmitting}
               >
                 <option value="">Select</option>
                 <option value="1">1 Device</option>
                 <option value="5">5 Devices</option>
                 <option value="10">10 Devices</option>
+              </select>
+            </div>
+            <div>
+              <label className="block mb-1 text-sm font-medium">Status</label>
+              <select
+                value={status}
+                onChange={(e) => setStatus(e.target.value as 'Active' | 'Inactive')}
+                className="w-full border rounded p-2 text-sm"
+                disabled={isSubmitting}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
               </select>
             </div>
           </div>
@@ -70,6 +118,7 @@ export default function AddNewUniversityPage() {
                 className="hidden"
                 accept="image/*"
                 onChange={handleLogoChange}
+                disabled={isSubmitting}
               />
             </div>
           </div>
@@ -78,14 +127,16 @@ export default function AddNewUniversityPage() {
               type="button"
               onClick={() => router.push('/universities')}
               className="border border-red-500 text-red-500 px-4 py-2 rounded text-sm hover:bg-red-50"
+              disabled={isSubmitting}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="bg-blue-900 text-white px-4 py-2 rounded text-sm hover:bg-blue-800"
+              className="bg-blue-900 text-white px-4 py-2 rounded text-sm hover:bg-blue-800 disabled:bg-blue-300"
+              disabled={isSubmitting}
             >
-              Create University
+              {isSubmitting ? 'Creating...' : 'Create University'}
             </button>
           </div>
         </form>

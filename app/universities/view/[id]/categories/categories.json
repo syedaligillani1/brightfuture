@@ -1,0 +1,6 @@
+[
+  { "id": 1, "name": "Mathematics", "icon": "Calculator", "totalCourses": 12 },
+  { "id": 2, "name": "Physics", "icon": "Atom", "totalCourses": 8 },
+  { "id": 3, "name": "Literature", "icon": "BookOpen", "totalCourses": 10 },
+  { "id": 4, "name": "Computer Science", "icon": "Monitor", "totalCourses": 15 }
+] 

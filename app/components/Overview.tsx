@@ -11,65 +11,69 @@ const data = [
 
 export default function OverviewChart() {
   return (
-    <div className="bg-white rounded-xl shadow p-6 w-full">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="font-semibold">Overview</h2>
-        <select className="text-sm border rounded px-2 py-1">
-          <option>This Month</option>
-        </select>
-      </div>
+    <div className="h-full">
+      <div className="flex flex-col space-y-4">
+        <div className="flex flex-col sm:flex-row items-center gap-4">
+          {/* Pie chart */}
+          <div className="w-full sm:w-1/2 h-48 sm:h-52 min-w-0">
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie
+                  data={data}
+                  dataKey="value"
+                  nameKey="name"
+                  innerRadius={50}
+                  outerRadius={80}
+                  paddingAngle={2}
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={entry.color} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
 
-      <div className="flex items-center">
-        {/* Pie chart */}
-        <div className="w-1/2 h-52">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={data}
-                dataKey="value"
-                nameKey="name"
-                innerRadius={50}
-                outerRadius={80}
-                paddingAngle={2}
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={entry.color} />
-                ))}
-              </Pie>
-              <Tooltip />
-            </PieChart>
-          </ResponsiveContainer>
-        </div>
-
-        {/* Legend */}
-        <div className="w-1/2 text-sm">
-          <table className="w-full text-left">
-            <thead>
-              <tr>
-                <th className="text-gray-400 font-normal">Label</th>
-                <th className="text-gray-400 font-normal">Value</th>
-                <th className="text-gray-400 font-normal">%</th>
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((entry) => {
-                const total = data.reduce((sum, d) => sum + d.value, 0);
-                const percent = ((entry.value / total) * 100).toFixed(1);
-                return (
-                  <tr key={entry.name}>
-                    <td className="py-1">
-                      <span className="inline-block w-2 h-2 rounded-full mr-2" style={{ backgroundColor: entry.color }} />
-                      {entry.name}
-                    </td>
-                    <td>{entry.value.toLocaleString()}</td>
-                    <td>{percent}%</td>
-                  </tr>
-                );
-              })}
-            </tbody>
-          </table>
+          {/* Legend */}
+          <div className="w-full sm:w-1/2">
+            <table className="w-full text-left text-sm">
+              <thead>
+                <tr>
+                  <th className="pb-2 text-gray-400 font-normal">Label</th>
+                  <th className="pb-2 text-gray-400 font-normal">Value</th>
+                  <th className="pb-2 text-gray-400 font-normal">%</th>
+                </tr>
+              </thead>
+              <tbody className="text-xs sm:text-sm">
+                {data.map((entry) => {
+                  const total = data.reduce((sum, d) => sum + d.value, 0);
+                  const percent = ((entry.value / total) * 100).toFixed(1);
+                  return (
+                    <tr key={entry.name}>
+                      <td className="py-1.5">
+                        <div className="flex items-center gap-2">
+                          <span 
+                            className="inline-block w-2.5 h-2.5 rounded-full" 
+                            style={{ backgroundColor: entry.color }} 
+                          />
+                          <span className="truncate">{entry.name}</span>
+                        </div>
+                      </td>
+                      <td className="py-1.5">{entry.value.toLocaleString()}</td>
+                      <td className="py-1.5">{percent}%</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+
+
+

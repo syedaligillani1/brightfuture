@@ -5,19 +5,24 @@ type ModalProps = {
 }
 
 export default function Modal({ open, onClose, children }: ModalProps) {
-  if (!open) return null
+  if (!open) return null;
 
   return (
-<div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-100 bg-opacity-60">
-      <div className="bg-white rounded-lg shadow-md p-6 w-full max-w-md relative">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-auto relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-3 text-gray-600 text-lg"
+          className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors"
+          aria-label="Close modal"
         >
-          ×
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
         </button>
-        {children}
+        <div className="p-4 sm:p-6">
+          {children}
+        </div>
       </div>
     </div>
-  )
+  );
 }
