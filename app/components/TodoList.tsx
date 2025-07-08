@@ -29,7 +29,7 @@ export default function TodoList({ tasks, onAddTask }: Props) {
         title="Add To Do"
         description="You clicked Add To Do button"
         confirmLabel="OK"
-        cancelLabel=""
+        cancelLabel="Cancel"
         onConfirm={() => setModalOpen(false)}
       />
       <ul className="space-y-3">

@@ -121,7 +121,7 @@ export default function CoursesPage() {
       title="Add New"
       description="You clicked Add New button"
       confirmLabel="OK"
-      cancelLabel=""
+      cancelLabel="Cancel"
       onConfirm={() => setModalOpen(false)}
     />
   );

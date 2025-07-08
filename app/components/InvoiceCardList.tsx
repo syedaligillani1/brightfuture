@@ -61,7 +61,7 @@ export default function InvoiceCardList({ title, items }: Props) {
                 title="Invoice"
                 description="You clicked View Invoice button"
                 confirmLabel="OK"
-                cancelLabel=""
+                cancelLabel="Cancel"
                 onConfirm={() => setModalOpen(false)}
             />
         </div>
