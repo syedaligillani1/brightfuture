@@ -1,18 +1,22 @@
 // app/universities/view/[id]/courses/page.tsx
 "use client";
 import { useState, useRef, useEffect } from "react";
-import UniversitiesTable from "@/app/universities/UniversitiesTable";
+import GenericTable from '@/app/components/table/GenericTable';
 import { MoreHorizontal } from "lucide-react";
+import Modal from '@/app/reused-Components /Modal';
 
 const coursesData = [
   { id: 1, name: "Transportation", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
-  // ...more
+  { id: 2, name: "Multiplication", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
+  { id: 3, name: "Transformation", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
+
 ];
 
 export default function CoursesPage() {
   const [filtered, setFiltered] = useState(coursesData);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -48,25 +52,26 @@ export default function CoursesPage() {
     setOpenDropdown(null);
   };
 
-  const renderRow = (c: typeof coursesData[0], idx: number) => (
-    <tr key={c.id} className="border-b border-gray-100 hover:bg-gray-50">
-      <td className="px-6 py-4">{c.name}</td>
-      <td className="px-6 py-4">{c.category}</td>
-      <td className="px-6 py-4">{c.code}</td>
-      <td className="px-6 py-4">{c.instructor}</td>
-      <td className="px-6 py-4">{c.mode}</td>
-      <td className="px-6 py-4">{c.dCount}</td>
-      <td className="px-6 py-4">{c.enrolled}</td>
-      <td className="px-6 py-4">{c.onlinePrice}</td>
-      <td className="px-6 py-4">{c.inPersonPrice}</td>
+  const renderRow = (course: typeof coursesData[0]) => (
+    <tr key={course.id} className="border-b border-gray-100 hover:bg-gray-50">
+      <td className="px-6 py-4"><span>↕️</span></td>
+      <td className="px-6 py-4 flex items-center gap-2">{course.name}</td>
+      <td className="px-6 py-4">{course.category}</td>
+      <td className="px-6 py-4">{course.code}</td>
+      <td className="px-6 py-4">{course.instructor}</td>
+      <td className="px-6 py-4">{course.mode}</td>
+      <td className="px-6 py-4">{course.dCount}</td>
+      <td className="px-6 py-4">{course.enrolled}</td>
+      <td className="px-6 py-4">{course.onlinePrice}</td>
+      <td className="px-6 py-4">{course.inPersonPrice}</td>
       <td className="px-6 py-4 text-center relative">
         <button
-          onClick={() => setOpenDropdown(openDropdown === c.id ? null : c.id)}
+          onClick={() => setOpenDropdown(openDropdown === course.id ? null : course.id)}
           className="p-1 hover:bg-gray-200 rounded-full"
         >
           <MoreHorizontal className="h-5 w-5 text-gray-500" />
         </button>
-        {openDropdown === c.id && (
+        {openDropdown === course.id && (
           <div
             ref={dropdownRef}
             className="absolute right-0 mt-2 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg z-20 py-2 flex flex-col items-stretch"
@@ -83,7 +88,7 @@ export default function CoursesPage() {
               onClick={e => {
                 e.preventDefault();
                 if (window.confirm('Are you sure you want to delete this item?')) {
-                  handleDelete(c.id);
+                  handleDelete(course.id);
                 }
               }}
             >
@@ -102,12 +107,22 @@ export default function CoursesPage() {
   );
 
   return (
-    <UniversitiesTable
+    <GenericTable
       columns={columns}
       data={filtered}
       renderRow={renderRow}
       onSearch={handleSearch}
       searchPlaceholder="Search Course, Code, Instructor"
+      onAddNew={() => setModalOpen(true)}
+    />
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      title="Add New"
+      description="You clicked Add New button"
+      confirmLabel="OK"
+      cancelLabel="Cancel"
+      onConfirm={() => setModalOpen(false)}
     />
   );
 }

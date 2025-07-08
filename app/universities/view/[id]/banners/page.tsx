@@ -1,3 +1,7 @@
+import GenericTable from '@/app/components/table/GenericTable';
+
 export default function BannersPage() {
-  return <div className="p-8">This is the Banners page.</div>;
+  return (
+     <p>Banners Page</p>
+  );
 } 

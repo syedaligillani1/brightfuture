@@ -1,7 +1,9 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import UniversitiesTable from "@/app/universities/UniversitiesTable";
 import { MoreHorizontal, Calculator, Atom, BookOpen, Monitor, Link } from "lucide-react";
+import GenericTable from "@/app/components/table/GenericTable";
+import Modal from '@/app/reused-Components /Modal';
+
 
 const categoriesData = [
   { id: 1, icon: <Calculator />, name: "Math", totalCourses: 23 },
@@ -14,6 +16,7 @@ export default function CategoriesPage() {
   const [filtered, setFiltered] = useState(categoriesData);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
 
 
@@ -32,7 +35,7 @@ export default function CategoriesPage() {
     setOpenDropdown(null);
   };
 
-  const renderRow = (cat: typeof categoriesData[0], idx: number) => (
+  const renderRow = (cat: typeof categoriesData[0]) => (
     <tr key={cat.id} className="border-b border-gray-100 hover:bg-gray-50">
       <td className="px-6 py-4"><span>↕️</span></td>
       <td className="px-6 py-4 flex items-center gap-2">{cat.icon} {cat.name}</td>
@@ -80,27 +83,22 @@ export default function CategoriesPage() {
   );
 
   return (
-
-    <div>
-    <div className="flex justify-end mb-4">
-
-    <Link
-    href={`/universities/departments-management/add`}
-    className="px-4 py-2 bg-blue-900 text-white rounded text-sm hover:bg-blue-800"
-  >
-    Add Category
-  </Link>
-  </div>
-
-    <UniversitiesTable
+    <GenericTable
       columns={columns}
       data={filtered}
       renderRow={renderRow}
       onSearch={handleSearch}
       searchPlaceholder="Search Category"
+      onAddNew={() => setModalOpen(true)}
     />
-    </div>
-
-
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      title="Add New"
+      description="You clicked Add New button"
+      confirmLabel="OK"
+      cancelLabel=""
+      onConfirm={() => setModalOpen(false)}
+    />
   );
 }

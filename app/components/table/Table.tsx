@@ -5,6 +5,7 @@ import Button from '../../utility/Button'
 import Modal from '@/app/utility/Modal'
 import AddUniversity from '@/app/utility/AddUniversity'
 import Router, { useRouter } from 'next/router'
+import PrimaryButton from '@/app/reused-Components /PrimaryButton'
 
 
 export default function Table() {
@@ -25,9 +26,7 @@ export default function Table() {
       </div>
 
           <div className='p6'>
-        <Button label="Add University" 
-         onClick={() => Router.push('/universities')}
- />
+        <PrimaryButton label="Add University" onClick={() => alert('You clicked Add University button')} type="button" />
 
         <Modal open={open} onClose={() => setOpen(false)}>
           <h2 className="text-lg font-semibold mb-4">Add New University</h2>

@@ -48,5 +48,16 @@
     "enrolledStudents": 0,
     "conversion": 0,
     "id": 5
+  },
+  {
+    "name": "live",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%20University",
+    "id": 6
   }
 ]

@@ -3,6 +3,8 @@
 import { useState, useRef, useEffect } from "react";
 import UniversitiesTable from "@/app/universities/UniversitiesTable";
 import { MoreHorizontal, Atom } from "lucide-react";
+import GenericTable from "@/app/components/table/GenericTable";
+import Modal from '@/app/reused-Components /Modal';
 
 const storiesData = [
   { id: 1, title: "Story Title Here", created: "Jan 9, 2025", ending: "Feb 9, 2025", status: false },
@@ -13,6 +15,7 @@ export default function StoriesPage() {
   const [filtered, setFiltered] = useState(storiesData);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -97,12 +100,22 @@ export default function StoriesPage() {
   );
 
   return (
-    <UniversitiesTable
+    <GenericTable
       columns={columns}
       data={filtered}
       renderRow={renderRow}
       onSearch={handleSearch}
-      searchPlaceholder="Search stories by name"
+      searchPlaceholder="Search Story"
+      onAddNew={() => setModalOpen(true)}
+    />
+    <Modal
+      open={modalOpen}
+      onClose={() => setModalOpen(false)}
+      title="Add New"
+      description="You clicked Add New button"
+      confirmLabel="OK"
+      cancelLabel=""
+      onConfirm={() => setModalOpen(false)}
     />
   );
 }

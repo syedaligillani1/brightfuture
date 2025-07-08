@@ -10,6 +10,8 @@ import { useRouter } from "next/navigation";
 import { universityColumns, University } from "./data";
 import { ENDPOINTS } from "../api/url/endpoints";
 import Modal from "../reused-Components /Modal";
+import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import CancelButton from '@/app/reused-Components /CancelButton';
 
 const iconMap: Record<string, React.ComponentType<any>> = {
   DollarSign,
@@ -147,6 +149,7 @@ export default function Universities() {
           onTabChange={setActiveTab}
           searchPlaceholder="Search University by name, category"
           onSearch={handleSearch}
+          onAddNew={() => router.push('/universities/add')}
           renderRow={(u) => {
             const isDropdownOpen = openDropdown === filteredRows.indexOf(u);
             return (
@@ -175,16 +178,15 @@ export default function Universities() {
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
-                      <button className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleEdit(u)}>Edit</button>
-                      <button className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleDelete(u)}>Delete</button>
-                      <button className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" onClick={() => handleView(u)}>View</button>
+                      <PrimaryButton label="Edit" onClick={() => handleEdit(u)} type="button" className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" />
+                      <CancelButton label="Delete" onClick={() => handleDelete(u)} type="button" className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2" />
+                      <PrimaryButton label="View" onClick={() => handleView(u)} type="button" className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" />
                     </div>
                   )}
                 </td>
               </tr>
             );
           }}
-          onAddNew={() => router.push('/universities/add')}
         />
       </div>
 

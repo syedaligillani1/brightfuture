@@ -63,5 +63,95 @@
     "totalStudents": 0,
     "enrolledStudents": 0,
     "status": "Active"
+  },
+  {
+    "name": "hello",
+    "logo": "/logo.png",
+    "departments": 1,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "ssss",
+    "logo": "/logo.png",
+    "departments": 10,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "uni",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Inactive"
+  },
+  {
+    "name": "hello world",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "hold",
+    "logo": "/logo.png",
+    "departments": 1,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "new uni",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "add new",
+    "logo": "/logo.png",
+    "departments": 1,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "qwertt",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
+  },
+  {
+    "name": "sds",
+    "logo": "/logo.png",
+    "departments": 1,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Inactive"
   }
 ]

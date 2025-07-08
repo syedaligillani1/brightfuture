@@ -3,7 +3,8 @@ import { useState, useRef, useEffect } from "react";
 import UniversitiesTable from "@/app/universities/UniversitiesTable";
 import { MoreHorizontal, Building2 } from "lucide-react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
+import GenericTable from "@/app/components/table/GenericTable";
 
 interface Department {
   id: number;
@@ -26,13 +27,15 @@ export default function DepartmentsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
+  const router = useRouter();
+
   useEffect(() => {
     fetchDepartments();
-  }, [universityId]);
+  }, []);
 
   const fetchDepartments = async () => {
     try {
-      const response = await fetch(`/api/departments?universityId=${encodeURIComponent(universityId)}`);
+      const response = await fetch('/api/departments');
       if (!response.ok) {
         throw new Error('Failed to fetch departments');
       }
@@ -82,6 +85,26 @@ export default function DepartmentsPage() {
     );
   };
 
+  const handleAddNew = async () => {
+    const name = prompt('Enter department name:');
+    if (!name) return;
+    const newDepartment = {
+      name,
+      logo: '/logo.png',
+      totalCourses: 0,
+      totalInstructors: 0,
+      totalStudents: 0,
+      enrolledStudents: 0,
+      conversion: 0
+    };
+    await fetch('/api/departments', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(newDepartment)
+    });
+    fetchDepartments();
+  };
+
   const handleDelete = async (id: number) => {
     try {
       const response = await fetch(`/api/departments?id=${id}&universityId=${encodeURIComponent(universityId)}`, {
@@ -105,7 +128,7 @@ export default function DepartmentsPage() {
     <tr key={dept.id} className="border-b border-gray-100 hover:bg-gray-50">
       <td className="px-6 py-4"><span>↕️</span></td>
       <td className="px-6 py-4 flex items-center gap-2">
-        <Building2 className="h-5 w-5" /> {dept.name}
+        {dept.logo && <img src={dept.logo} alt="logo" className="h-6 w-6 rounded-full" />} {dept.name}
       </td>
       <td className="px-6 py-4">{dept.totalCourses}</td>
       <td className="px-6 py-4">{dept.totalInstructors}</td>
@@ -165,19 +188,15 @@ export default function DepartmentsPage() {
   return (
     <div>
       <div className="flex justify-end mb-4">
-        <Link
-          href={`/universities/departments-management/add?universityId=${encodeURIComponent(universityId)}`}
-          className="px-4 py-2 bg-blue-900 text-white rounded text-sm hover:bg-blue-800"
-        >
-          Add Department
-        </Link>
+
       </div>
-      <UniversitiesTable
+      <GenericTable
         columns={columns}
         data={filtered}
         renderRow={renderRow}
         onSearch={handleSearch}
         searchPlaceholder="Search Department"
+        onAddNew={handleAddNew}
       />
     </div>
   );

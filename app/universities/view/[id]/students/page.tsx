@@ -114,6 +114,8 @@ export default function StudentsPage() {
       }}
       onSearch={handleSearch}
       searchPlaceholder="Search Student"
+      onAddNew={() => alert('You clicked Add New button')}
+      addButtonLabel="hello"
     />
   );
 }
