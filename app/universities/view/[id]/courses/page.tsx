@@ -1,22 +1,38 @@
-// app/universities/view/[id]/courses/page.tsx
-"use client";
-import { useState, useRef, useEffect } from "react";
+'use client';
+import { useState, useEffect, useRef } from 'react';
+import { useRouter, useParams } from 'next/navigation';
 import GenericTable from '@/app/components/table/GenericTable';
-import { MoreHorizontal } from "lucide-react";
+import { MoreHorizontal } from 'lucide-react';
 import Modal from '@/app/reused-Components /Modal';
 
-const coursesData = [
-  { id: 1, name: "Transportation", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
-  { id: 2, name: "Multiplication", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
-  { id: 3, name: "Transformation", category: "Math", code: "CVE 450", instructor: "Eng. Ahmed Mahdi", mode: "Online", dCount: 24, enrolled: 24, onlinePrice: "00 KD", inPersonPrice: "N/A" },
-
-];
+interface Course {
+  id: number;
+  name: string;
+  department: string;
+  credits: number;
+  status: boolean;
+}
 
 export default function CoursesPage() {
-  const [filtered, setFiltered] = useState(coursesData);
+  const router = useRouter();
+  const params = useParams();
+  const universityId = params.id as string;
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [filteredCourses, setFilteredCourses] = useState<Course[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [courseToDelete, setCourseToDelete] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const [modalOpen, setModalOpen] = useState(false);
+
+  useEffect(() => {
+    async function fetchCourses() {
+      const response = await fetch('/api/courses');
+      const data = await response.json();
+      setCourses(data);
+      setFilteredCourses(data);
+    }
+    fetchCourses();
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -28,101 +44,114 @@ export default function CoursesPage() {
       }
     }
     if (openDropdown !== null) {
-      document.addEventListener("mousedown", handleClickOutside);
+      document.addEventListener('mousedown', handleClickOutside);
     }
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [openDropdown]);
 
-  const columns = ["Name", "Category", "Code", "Instructor", "Mode", "D. Count", "Enrolled Students", "Online Price", "In-Person Price", "Action"];
+  const columns = ['Name', 'Department', 'Credits', 'Status', 'Action'];
 
   const handleSearch = (query: string) => {
-    setFiltered(
-      coursesData.filter((c) =>
-        c.name.toLowerCase().includes(query.toLowerCase()) ||
-        c.code.toLowerCase().includes(query.toLowerCase()) ||
-        c.instructor.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+    if (!query.trim()) {
+      setFilteredCourses(courses);
+    } else {
+      setFilteredCourses(
+        courses.filter((c) => c.name.toLowerCase().includes(query.toLowerCase()))
+      );
+    }
   };
 
-  const handleDelete = (id: number) => {
-    setFiltered((prev) => prev.filter((c) => c.id !== id));
-    setOpenDropdown(null);
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/courses?id=${id}`, { method: 'DELETE' });
+      if (!response.ok) {
+        throw new Error('Failed to delete course');
+      }
+      setCourses((prev) => prev.filter((c) => c.id !== id));
+      setFilteredCourses((prev) => prev.filter((c) => c.id !== id));
+      setOpenDropdown(null);
+    } catch (error) {
+      alert('Failed to delete course. Please try again.');
+    }
   };
-
-  const renderRow = (course: typeof coursesData[0]) => (
-    <tr key={course.id} className="border-b border-gray-100 hover:bg-gray-50">
-      <td className="px-6 py-4"><span>↕️</span></td>
-      <td className="px-6 py-4 flex items-center gap-2">{course.name}</td>
-      <td className="px-6 py-4">{course.category}</td>
-      <td className="px-6 py-4">{course.code}</td>
-      <td className="px-6 py-4">{course.instructor}</td>
-      <td className="px-6 py-4">{course.mode}</td>
-      <td className="px-6 py-4">{course.dCount}</td>
-      <td className="px-6 py-4">{course.enrolled}</td>
-      <td className="px-6 py-4">{course.onlinePrice}</td>
-      <td className="px-6 py-4">{course.inPersonPrice}</td>
-      <td className="px-6 py-4 text-center relative">
-        <button
-          onClick={() => setOpenDropdown(openDropdown === course.id ? null : course.id)}
-          className="p-1 hover:bg-gray-200 rounded-full"
-        >
-          <MoreHorizontal className="h-5 w-5 text-gray-500" />
-        </button>
-        {openDropdown === course.id && (
-          <div
-            ref={dropdownRef}
-            className="absolute right-0 mt-2 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg z-20 py-2 flex flex-col items-stretch"
-            style={{ boxShadow: "0 4px 16px rgba(0,0,0,0.08)" }}
-          >
-            <button
-              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle edit here */}}
-            >
-              Edit
-            </button>
-            <button
-              className="px-4 py-2 text-left text-red-600 hover:bg-red-50 transition"
-              onClick={e => {
-                e.preventDefault();
-                if (window.confirm('Are you sure you want to delete this item?')) {
-                  handleDelete(course.id);
-                }
-              }}
-            >
-              Delete
-            </button>
-            <button
-              className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle view here */}}
-            >
-              View
-            </button>
-          </div>
-        )}
-      </td>
-    </tr>
-  );
 
   return (
-    <GenericTable
-      columns={columns}
-      data={filtered}
-      renderRow={renderRow}
-      onSearch={handleSearch}
-      searchPlaceholder="Search Course, Code, Instructor"
-      onAddNew={() => setModalOpen(true)}
-    />
-    <Modal
-      open={modalOpen}
-      onClose={() => setModalOpen(false)}
-      title="Add New"
-      description="You clicked Add New button"
-      confirmLabel="OK"
-      cancelLabel="Cancel"
-      onConfirm={() => setModalOpen(false)}
-    />
+    <div>
+      <GenericTable<Course>
+        columns={columns}
+        data={filteredCourses}
+        renderRow={(course) => {
+          const isDropdownOpen = openDropdown === course.id;
+          return (
+            <tr key={course.id} className="border-t hover:bg-gray-50">
+              <td className="px-2 py-2 sm:px-4 sm:py-3">
+                <span className="text-xs sm:text-sm font-medium">{course.name}</span>
+              </td>
+              <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{course.department}</td>
+              <td className="px-2 py-2 sm:px-4 sm:py-3 text-xs sm:text-sm">{course.credits}</td>
+              <td className="px-2 py-2 sm:px-4 sm:py-3">
+                <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+                  course.status ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
+                  {course.status ? 'Active' : 'Inactive'}
+                </span>
+              </td>
+              <td className="px-2 py-2 sm:px-4 sm:py-3 relative text-right">
+                <button
+                  onClick={() => setOpenDropdown(isDropdownOpen ? null : course.id)}
+                  className="inline-flex items-center justify-center p-1.5 hover:bg-gray-100 rounded-full transition-colors"
+                  aria-label="Actions"
+                >
+                  <MoreHorizontal size={14} className="sm:w-4 sm:h-4 text-gray-500" />
+                </button>
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
+                    <button
+                      className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      onClick={() => {
+                        router.push(`/universities/view/${encodeURIComponent(universityId)}/courses/edit/${encodeURIComponent(course.id)}`);
+                        setOpenDropdown(null);
+                      }}
+                    >
+                      <span>Edit</span>
+                    </button>
+                    <button
+                      className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      onClick={() => {
+                        setCourseToDelete(course.id);
+                        setDeleteModalOpen(true);
+                      }}
+                    >
+                      <span>Delete</span>
+                    </button>
+                  </div>
+                )}
+              </td>
+            </tr>
+          );
+        }}
+        onSearch={handleSearch}
+        searchPlaceholder="Search Course"
+        onAddNew={() => router.push(`/universities/view/${encodeURIComponent(universityId)}/courses/add?universityId=${encodeURIComponent(universityId)}`)}
+        addButtonLabel="Add New Course"
+      />
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title="Delete Course"
+        description="Are you sure you want to delete this course?"
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          if (courseToDelete !== null) {
+            handleDelete(courseToDelete);
+          }
+          setDeleteModalOpen(false);
+          setCourseToDelete(null);
+        }}
+      />
+    </div>
   );
 }

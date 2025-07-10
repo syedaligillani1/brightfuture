@@ -8,6 +8,7 @@ type InputFieldProps = {
     name?: string
     error?: boolean
     success?: boolean
+    disabled? : boolean
 }
 
 export default function InputField({
@@ -20,6 +21,7 @@ export default function InputField({
     name,
     error,
     success,
+    disabled
 }: InputFieldProps) {
 
     return (

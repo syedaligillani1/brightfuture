@@ -3,6 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import GenericTable from "@/app/components/table/GenericTable";
 import { MoreHorizontal } from "lucide-react";
+import studentsData from './students.json';
+import { useRouter, useParams } from 'next/navigation';
+import Modal from '@/app/reused-Components /Modal';
 
 interface Student {
   id: number;
@@ -13,17 +16,20 @@ interface Student {
   status: boolean;
 }
 
-const studentsData: Student[] = [
-  { id: 1, name: "Sara Alsannat", department: "Biomedical", purchaseCourses: 6, mobile: "99820270", status: false },
-  { id: 2, name: "Fay Alqabandi", department: "Civil", purchaseCourses: 6, mobile: "50274784", status: true },
-  { id: 3, name: "Latifa Meshal", department: "Biomedical", purchaseCourses: 6, mobile: "50941465", status: false },
-  { id: 4, name: "musaid alwadi", department: "Computer Science", purchaseCourses: 6, mobile: "50884058", status: true },
-];
 
 export default function StudentsPage() {
-  const [filtered, setFiltered] = useState(studentsData);
+  const router = useRouter();
+  const params = useParams();
+  const universityId = params.id as string;
+  const [filtered, setFiltered] = useState<Student[]>([]);
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [studentToDelete, setStudentToDelete] = useState<number | null>(null);
+
+  useEffect(() => {
+    setFiltered(studentsData);
+  }, []);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -46,18 +52,27 @@ export default function StudentsPage() {
 
   const handleSearch = (query: string) => {
     setFiltered(
-      studentsData.filter((s) =>
+      studentsData.filter((s: Student) =>
         s.name.toLowerCase().includes(query.toLowerCase())
       )
     );
   };
 
-  const handleDelete = (id: number) => {
-    setFiltered((prev) => prev.filter((s) => s.id !== id));
-    setOpenDropdown(null);
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/students?id=${id}`, { method: 'DELETE' });
+      if (!response.ok) {
+        throw new Error('Failed to delete student');
+      }
+      setFiltered((prev: Student[]) => prev.filter((s) => s.id !== id));
+      setOpenDropdown(null);
+    } catch (error) {
+      alert('Failed to delete student. Please try again.');
+    }
   };
 
   return (
+    <div>
     <GenericTable<Student>
       columns={columns}
       data={filtered}
@@ -90,13 +105,19 @@ export default function StudentsPage() {
                 <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
                   <button
                     className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
-                    onClick={() => {/* Handle edit */}}
+                    onClick={() => {
+                      router.push(`/universities/view/${encodeURIComponent(universityId)}/students/edit/${encodeURIComponent(student.id)}`);
+                      setOpenDropdown(null);
+                    }}
                   >
                     <span>Edit</span>
                   </button>
                   <button
                     className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2"
-                    onClick={() => handleDelete(student.id)}
+                    onClick={() => {
+                      setStudentToDelete(student.id);
+                      setDeleteModalOpen(true);
+                    }}
                   >
                     <span>Delete</span>
                   </button>
@@ -114,8 +135,23 @@ export default function StudentsPage() {
       }}
       onSearch={handleSearch}
       searchPlaceholder="Search Student"
-      onAddNew={() => alert('You clicked Add New button')}
-      addButtonLabel="hello"
+      onAddNew={() => router.push(`/universities/view/${encodeURIComponent(universityId)}/students/add?universityId=${encodeURIComponent(universityId)}`)}
     />
+    <Modal
+      open={deleteModalOpen}
+      onClose={() => setDeleteModalOpen(false)}
+      title="Delete Student"
+      description="Are you sure you want to delete this student?"
+      confirmLabel="Delete"
+      cancelLabel="Cancel"
+      onConfirm={() => {
+        if (studentToDelete !== null) {
+          handleDelete(studentToDelete);
+        }
+        setDeleteModalOpen(false);
+        setStudentToDelete(null);
+      }}
+    />
+    </div>
   );
 }

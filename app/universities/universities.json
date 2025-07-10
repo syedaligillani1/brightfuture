@@ -153,5 +153,15 @@
     "totalStudents": 0,
     "enrolledStudents": 0,
     "status": "Inactive"
+  },
+  {
+    "name": "Sami",
+    "logo": "/logo.png",
+    "departments": 5,
+    "instructors": 0,
+    "courses": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "status": "Active"
   }
 ]

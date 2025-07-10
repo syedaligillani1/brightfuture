@@ -178,9 +178,29 @@ export default function Universities() {
                   </button>
                   {isDropdownOpen && (
                     <div className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg z-10 border border-gray-200 py-1">
-                      <PrimaryButton label="Edit" onClick={() => handleEdit(u)} type="button" className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" />
-                      <CancelButton label="Delete" onClick={() => handleDelete(u)} type="button" className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2" />
-                      <PrimaryButton label="View" onClick={() => handleView(u)} type="button" className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2" />
+                      <button
+                        onClick={() => handleEdit(u)}
+                        type="button"
+                        className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      >
+                        Edit
+                      </button>
+
+                      <button
+                        onClick={() => handleDelete(u)}
+                        type="button"
+                        className="text-red-500 w-full px-4 py-2 text-xs sm:text-sm text-left hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      >
+                        Delete
+                      </button>
+
+                      <button
+                        onClick={() => handleView(u)}
+                        type="button"
+                        className="w-full px-4 py-2 text-xs sm:text-sm text-left text-gray-700 hover:bg-gray-50 transition-colors flex items-center gap-2"
+                      >
+                        View
+                      </button>
                     </div>
                   )}
                 </td>

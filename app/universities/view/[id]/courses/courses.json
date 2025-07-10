@@ -1,4 +1,31 @@
 [
-  { "id": 1, "name": "Transportation", "category": "Math", "code": "CVE 450", "instructor": "Eng. Ahmed Mahdi", "mode": "Online", "dCount": 24, "enrolled": 24, "onlinePrice": "00 KD", "inPersonPrice": "N/A" }
-  // Add more courses as needed
-] 
+  {
+    "id": 1,
+    "name": "Introduction to Computer Science",
+    "department": "Computer Science",
+    "credits": 3,
+    "status": true
+  },
+  {
+    "id": 2,
+    "name": "Calculus I",
+    "department": "Mathematics",
+    "credits": 4,
+    "status": true
+  },
+  {
+    "id": 3,
+    "name": "Physics for Engineers",
+    "department": "Physics",
+    "credits": 3,
+    "status": false
+  },
+  {
+    "name": "algorith",
+    "department": "cs",
+    "credits": 5,
+    "status": true,
+    "universityId": "Kuwait%25252520University",
+    "id": 4
+  }
+]

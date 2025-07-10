@@ -1,16 +1,11 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { MoreHorizontal, Calculator, Atom, BookOpen, Monitor, Link } from "lucide-react";
+import { MoreHorizontal} from "lucide-react";
 import GenericTable from "@/app/components/table/GenericTable";
 import Modal from '@/app/reused-Components /Modal';
+import categoriesData from './categories.json';
+import { useParams, useRouter } from "next/navigation";
 
-
-const categoriesData = [
-  { id: 1, icon: <Calculator />, name: "Math", totalCourses: 23 },
-  { id: 2, icon: <Atom />, name: "Physics", totalCourses: 23 },
-  { id: 3, icon: <BookOpen />, name: "English", totalCourses: 23 },
-  { id: 4, icon: <Monitor />, name: "Computer", totalCourses: 23 },
-];
 
 export default function CategoriesPage() {
   const [filtered, setFiltered] = useState(categoriesData);
@@ -18,7 +13,18 @@ export default function CategoriesPage() {
   const dropdownRef = useRef<HTMLDivElement | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [catToDelete, setCatToDelete] = useState<number | null>(null);
 
+  const router = useRouter();
+  const params = useParams();
+  const universityId = params.id as string;
+
+  useEffect(() => {
+    setCategories(categoriesData);
+    setFiltered(categoriesData);
+  }, []);
 
   const columns = ["Swap", "Category Name", "Total Courses", "Action"];
 
@@ -30,15 +36,28 @@ export default function CategoriesPage() {
     );
   };
 
-  const handleDelete = (id: number) => {
-    setFiltered((prev) => prev.filter((cat) => cat.id !== id));
-    setOpenDropdown(null);
+  const handleDelete = async (id: number) => {
+    try {
+      const response = await fetch(`/api/categories?id=${id}&universityId=${encodeURIComponent(universityId)}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Failed to delete category');
+
+      setFiltered(prev => prev.filter(cat => Number(cat.id) !== id));
+      setCategories(prev => prev.filter(cat => Number(cat.id) !== id));
+      setOpenDropdown(null);
+    } catch (error) {
+      console.error('Delete Error:', error);
+      alert('Failed to delete category');
+    }
   };
+
 
   const renderRow = (cat: typeof categoriesData[0]) => (
     <tr key={cat.id} className="border-b border-gray-100 hover:bg-gray-50">
       <td className="px-6 py-4"><span>↕️</span></td>
-      <td className="px-6 py-4 flex items-center gap-2">{cat.icon} {cat.name}</td>
+      <td className="px-6 py-4 flex items-center gap-2">{cat.name}</td>
       <td className="px-6 py-4">{cat.totalCourses}</td>
       <td className="px-6 py-4 text-center relative">
         <button
@@ -55,7 +74,10 @@ export default function CategoriesPage() {
           >
             <button
               className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle edit here */}}
+              onClick={() => {
+                router.push(`/universities/view/${encodeURIComponent(universityId)}/categories/edit/${encodeURIComponent(cat.id)}`);
+                setOpenDropdown(null);
+              }}
             >
               Edit
             </button>
@@ -63,16 +85,15 @@ export default function CategoriesPage() {
               className="px-4 py-2 text-left text-red-600 hover:bg-red-50 transition"
               onClick={e => {
                 e.preventDefault();
-                if (window.confirm('Are you sure you want to delete this item?')) {
-                  handleDelete(cat.id);
-                }
+                setCatToDelete(cat.id);
+                setDeleteModalOpen(true);
               }}
             >
               Delete
             </button>
             <button
               className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle view here */}}
+              onClick={() => {/* handle view here */ }}
             >
               View
             </button>
@@ -83,22 +104,31 @@ export default function CategoriesPage() {
   );
 
   return (
-    <GenericTable
-      columns={columns}
-      data={filtered}
-      renderRow={renderRow}
-      onSearch={handleSearch}
-      searchPlaceholder="Search Category"
-      onAddNew={() => setModalOpen(true)}
-    />
-    <Modal
-      open={modalOpen}
-      onClose={() => setModalOpen(false)}
-      title="Add New"
-      description="You clicked Add New button"
-      confirmLabel="OK"
-      cancelLabel=""
-      onConfirm={() => setModalOpen(false)}
-    />
+    <div>
+      <GenericTable
+        columns={columns}
+        data={filtered}
+        renderRow={renderRow}
+        onSearch={handleSearch}
+        searchPlaceholder="Search Category"
+        onAddNew={() => router.push(`/universities/view/${encodeURIComponent(universityId)}/categories/add?universityId=${encodeURIComponent(universityId)}`)}
+      />
+
+      <Modal
+        open={deleteModalOpen}
+        onClose={() => setDeleteModalOpen(false)}
+        title="Delete Category"
+        description="Are you sure you want to delete this category?"
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        onConfirm={() => {
+          if (catToDelete !== null) {
+            handleDelete(catToDelete);
+          }
+          setDeleteModalOpen(false);
+          setCatToDelete(null);
+        }}
+      />
+    </div>
   );
 }

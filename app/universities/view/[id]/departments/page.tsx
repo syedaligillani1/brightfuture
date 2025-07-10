@@ -5,9 +5,11 @@ import { MoreHorizontal, Building2 } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import GenericTable from "@/app/components/table/GenericTable";
+import departmentsData from './departments.json';
+import Modal from '@/app/reused-Components /Modal';
 
 interface Department {
-  id: number;
+  id: number | string;
   name: string;
   logo: string;
   totalCourses: number;
@@ -15,7 +17,7 @@ interface Department {
   totalStudents: number;
   enrolledStudents: number;
   conversion: number;
-  universityId: string;
+  universityId?: string;
 }
 
 export default function DepartmentsPage() {
@@ -26,28 +28,16 @@ export default function DepartmentsPage() {
   const [openDropdown, setOpenDropdown] = useState<number | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-
   const router = useRouter();
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deptToDelete, setDeptToDelete] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchDepartments();
+    // Load departments from JSON file
+    setDepartments(departmentsData);
+    setFiltered(departmentsData);
+    setIsLoading(false);
   }, []);
-
-  const fetchDepartments = async () => {
-    try {
-      const response = await fetch('/api/departments');
-      if (!response.ok) {
-        throw new Error('Failed to fetch departments');
-      }
-      const data = await response.json();
-      setDepartments(data);
-      setFiltered(data);
-    } catch (error) {
-      console.error('Error fetching departments:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -85,38 +75,17 @@ export default function DepartmentsPage() {
     );
   };
 
-  const handleAddNew = async () => {
-    const name = prompt('Enter department name:');
-    if (!name) return;
-    const newDepartment = {
-      name,
-      logo: '/logo.png',
-      totalCourses: 0,
-      totalInstructors: 0,
-      totalStudents: 0,
-      enrolledStudents: 0,
-      conversion: 0
-    };
-    await fetch('/api/departments', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newDepartment)
-    });
-    fetchDepartments();
-  };
-
   const handleDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/departments?id=${id}&universityId=${encodeURIComponent(universityId)}`, {
-        method: 'DELETE',
-      });
-      
+      const response = await fetch(
+        `/api/departments?id=${id}&universityId=${encodeURIComponent(universityId)}`,
+        { method: 'DELETE' }
+      );
       if (!response.ok) {
         throw new Error('Failed to delete department');
       }
-
-      setFiltered((prev) => prev.filter((dept) => dept.id !== id));
-      setDepartments((prev) => prev.filter((dept) => dept.id !== id));
+      setFiltered(prev => prev.filter(dept => Number(dept.id) !== id));
+      setDepartments(prev => prev.filter(dept => Number(dept.id) !== id));
       setOpenDropdown(null);
     } catch (error) {
       console.error('Error deleting department:', error);
@@ -137,12 +106,12 @@ export default function DepartmentsPage() {
       <td className="px-6 py-4">{dept.conversion}%</td>
       <td className="px-6 py-4 text-center relative">
         <button
-          onClick={() => setOpenDropdown(openDropdown === dept.id ? null : dept.id)}
+          onClick={() => setOpenDropdown(openDropdown === Number(dept.id) ? null : Number(dept.id))}
           className="p-1 hover:bg-gray-200 rounded-full"
         >
           <MoreHorizontal className="h-5 w-5 text-gray-500" />
         </button>
-        {openDropdown === dept.id && (
+        {openDropdown === Number(dept.id) && (
           <div
             ref={dropdownRef}
             className="absolute right-0 mt-2 min-w-[120px] bg-white border border-gray-300 rounded-lg shadow-lg z-20 py-2 flex flex-col items-stretch"
@@ -150,7 +119,10 @@ export default function DepartmentsPage() {
           >
             <button
               className="px-4 py-2 text-left text-gray-800 hover:bg-gray-100 transition"
-              onClick={() => {/* handle edit here */}}
+              onClick={() => {
+                router.push(`/universities/view/${encodeURIComponent(universityId)}/departments/edit/${encodeURIComponent(dept.id)}`);
+                setOpenDropdown(null);
+              }}
             >
               Edit
             </button>
@@ -158,9 +130,9 @@ export default function DepartmentsPage() {
               className="px-4 py-2 text-left text-red-600 hover:bg-red-50 transition"
               onClick={e => {
                 e.preventDefault();
-                if (window.confirm('Are you sure you want to delete this item?')) {
-                  handleDelete(dept.id);
-                }
+                setDeptToDelete(Number(dept.id));
+                setDeleteModalOpen(true);
+                setOpenDropdown(null);
               }}
             >
               Delete
@@ -196,7 +168,23 @@ export default function DepartmentsPage() {
         renderRow={renderRow}
         onSearch={handleSearch}
         searchPlaceholder="Search Department"
-        onAddNew={handleAddNew}
+        onAddNew={() => router.push(`/universities/departments-management/add?universityId=${encodeURIComponent(universityId)}`)}
+      />
+
+<Modal
+  open={deleteModalOpen}
+  onClose={() => setDeleteModalOpen(false)}
+  title="Delete Department"
+  description="Are you sure you want to delete this department?"
+  confirmLabel="Delete"
+  cancelLabel="Cancel"
+  onConfirm={() => {
+    if (deptToDelete !== null) {
+      handleDelete(deptToDelete);
+    }
+    setDeleteModalOpen(false);
+    setDeptToDelete(null);
+  }}
       />
     </div>
   );
