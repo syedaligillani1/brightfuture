@@ -5,7 +5,7 @@ import Button from '../../utility/Button'
 import Modal from '@/app/utility/Modal'
 import AddUniversity from '@/app/utility/AddUniversity'
 import Router, { useRouter } from 'next/router'
-import PrimaryButton from '@/app/reused-Components /PrimaryButton'
+import PrimaryButton from '@/app/components/PrimaryButton'
 
 
 export default function Table() {

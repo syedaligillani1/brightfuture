@@ -2,8 +2,8 @@
 
 import { useState } from 'react'
 import Button from './Button'
-import PrimaryButton from '@/app/reused-Components /PrimaryButton'
-import CancelButton from '@/app/reused-Components /CancelButton'
+import PrimaryButton from '@/app/components/PrimaryButton'
+import CancelButton from '@/app/components/CancelButton'
 
 type Props = {
   onClose: () => void

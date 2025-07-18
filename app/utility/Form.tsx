@@ -1,6 +1,6 @@
 import React from 'react';
-import PrimaryButton from '@/app/reused-Components /PrimaryButton';
-import CancelButton from '@/app/reused-Components /CancelButton';
+import PrimaryButton from '@/app/components/PrimaryButton';
+import CancelButton from '@/app/components/CancelButton';
 
 type FormField = {
   name: string;

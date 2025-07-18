@@ -2,8 +2,8 @@ import { useState } from "react";
 import TableTabs from "./TableTabs";
 import TableSearch from "./TableSearch";
 import DataTable from "./DataTable";
-import PrimaryButton from '@/app/reused-Components /PrimaryButton';
-import Modal from '@/app/reused-Components /Modal';
+import PrimaryButton from '@/app/components/PrimaryButton';
+import Modal from '@/app/components/Modal';
 export interface TableSearchProps {
   value: string;
   onChange: (value: string) => void;

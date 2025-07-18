@@ -1,4 +1,4 @@
-import PrimaryButton from '@/app/reused-Components /PrimaryButton';
+import PrimaryButton from '@/app/components/PrimaryButton';
 
 type ScheduleItem = {
   title: string

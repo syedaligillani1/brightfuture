@@ -1,9 +1,9 @@
 'use client'
 
 import { ScrollText } from "lucide-react"
-import PrimaryButton from '@/app/reused-Components /PrimaryButton'
+import PrimaryButton from '@/app/components/PrimaryButton'
 import { useState } from "react"
-import Modal from '@/app/reused-Components /Modal'
+import Modal from '@/app/components/Modal'
 
 
 

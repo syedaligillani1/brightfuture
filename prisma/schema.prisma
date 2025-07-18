@@ -19,3 +19,14 @@ model Course {
   credits Int
   status  Boolean
 }
+
+model User {
+    id      Int     @id @default(autoincrement())
+    userName String @unique
+    password String
+    DOB DateTime?
+    gender String?
+    accessToken  String?  
+    refreshToken String?  
+    
+}

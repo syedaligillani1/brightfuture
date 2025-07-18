@@ -1,8 +1,8 @@
 'use client'
 
-import PrimaryButton from '@/app/reused-Components /PrimaryButton'
-import Modal from '@/app/reused-Components /Modal'
-import { useState } from 'react'
+import PrimaryButton from '@/app/components/PrimaryButton'
+import Modal from '@/app/components/Modal'
+import  {useState}  from 'react'
 
 type Task = {
   title: string
