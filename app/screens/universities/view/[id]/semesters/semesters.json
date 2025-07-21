@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "name": "Fall 2024",
+    "startDate": "2024-09-01",
+    "endDate": "2024-12-15",
+    "status": true
+  },
+  {
+    "id": 2,
+    "name": "Spring 2025",
+    "startDate": "2025-01-10",
+    "endDate": "2025-05-01",
+    "status": true
+  },
+  {
+    "id": 3,
+    "name": "Summer 2025",
+    "startDate": "2025-06-01",
+    "endDate": "2025-08-15",
+    "status": false
+  },
+  {
+    "name": "summ34 21212",
+    "startDate": "2322-03-23",
+    "endDate": "24444-02-02",
+    "status": true,
+    "universityId": "Kuwait%252525252525252525252525252520University",
+    "id": 4
+  }
+]

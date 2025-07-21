@@ -1,6 +1,9 @@
 'use client'
 
 import { Percent, Receipt, ReceiptText } from "lucide-react"
+import PrimaryButton from '@/app/components/PrimaryButton';
+import Modal from '@/app/components/Modal';
+import { useState } from 'react';
 
 ReceiptText
 
@@ -16,12 +19,22 @@ type Props = {
 }
 
 export default function CouponCardList({ title, items }: Props) {
+    const [modalOpen, setModalOpen] = useState(false);
     return (
         <div className="bg-white p-4 rounded-xl shadow">
             <div className="flex justify-between items-center mb-2">
                 <h2 className="text-sm font-semibold">{title}</h2>
-                <button className="text-blue-800 text-xs">View All</button>
+                <PrimaryButton label="View All" onClick={() => setModalOpen(true)} type="button" />
             </div>
+            <Modal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title="View All"
+                description="You clicked View All button"
+                confirmLabel="OK"
+                cancelLabel=""
+                onConfirm={() => setModalOpen(false)}
+            />
 
             {items.map((item, index) => {
                 const percentage = (item.progress / item.total) * 100

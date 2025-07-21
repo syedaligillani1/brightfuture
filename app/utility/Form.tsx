@@ -1,5 +1,6 @@
 import React from 'react';
-import Button from './Button';
+import PrimaryButton from '@/app/components/PrimaryButton';
+import CancelButton from '@/app/components/CancelButton';
 
 type FormField = {
   name: string;
@@ -101,19 +102,17 @@ export default function Form({
       
       <div className="flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4">
         {onCancel && (
-          <Button
+          <CancelButton
             label={cancelLabel}
-            variant="secondary"
             onClick={onCancel}
+            className="w-full"
             type="button"
-            fullWidth
           />
         )}
-        <Button
+        <PrimaryButton
           label={submitLabel}
-          variant="primary"
+          className="w-full"
           type="submit"
-          fullWidth
         />
       </div>
     </form>

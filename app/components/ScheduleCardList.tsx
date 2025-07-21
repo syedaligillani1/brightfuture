@@ -1,3 +1,5 @@
+import PrimaryButton from '@/app/components/PrimaryButton';
+
 type ScheduleItem = {
   title: string
   time: string
@@ -45,7 +47,7 @@ export default function Schedules({
                 <p className="text-xs text-gray-500">{event.time}</p>
               </div>
             </div>
-            <button className="text-xs bg-blue-900 text-white rounded-full px-2 py-1">→ Detail</button>
+            <PrimaryButton label="→ Detail" onClick={() => alert('You clicked Detail button')} type="button" className="text-xs bg-blue-900 text-white rounded-full px-2 py-1" />
           </div>
         ))}
       </div>

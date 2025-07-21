@@ -1,6 +1,9 @@
 'use client'
 
 import { ScrollText } from "lucide-react"
+import PrimaryButton from '@/app/components/PrimaryButton'
+import { useState } from "react"
+import Modal from '@/app/components/Modal'
 
 
 
@@ -20,13 +23,13 @@ type Props = {
 }
 
 export default function InvoiceCardList({ title, items }: Props) {
+
+    const [modalOpen, setModalOpen] = useState(false);
     return (
         <div className="bg-white p-4 rounded-xl shadow ">
             <div className="flex justify-between items-center mb-2">
                 <h2 className="text-sm font-semibold">{title}</h2>
-                <button className="text-blue-900 text-xs">
-                    View All
-                </button>
+                <PrimaryButton label="View Invoice" onClick={() => setModalOpen(true)} type="button" />
 
             </div>
             {items.map((item, i) => (
@@ -52,6 +55,15 @@ export default function InvoiceCardList({ title, items }: Props) {
                     </div>
                 </div>
             ))}
+            <Modal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                title="Invoice"
+                description="You clicked View Invoice button"
+                confirmLabel="OK"
+                cancelLabel="Cancel"
+                onConfirm={() => setModalOpen(false)}
+            />
         </div>
     )
 }

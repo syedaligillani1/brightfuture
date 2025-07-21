@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import Button from './Button'
+import PrimaryButton from '@/app/components/PrimaryButton'
+import CancelButton from '@/app/components/CancelButton'
 
 type Props = {
   onClose: () => void
@@ -68,19 +70,16 @@ export default function AddUniversity({ onClose }: Props) {
         </div>
 
         <div className="flex justify-end gap-3 mt-4">
-          <Button
+          <CancelButton
             label="Cancel"
-            variant="outline"
-            size="sm"
             onClick={onClose}
+            className="px-4 py-2 text-sm"
             type="button"
           />
-          <Button
+          <PrimaryButton
             label="Create University"
-            variant="primary"
-            size="sm"
+            className="px-4 py-2 text-sm"
             type="submit"
-            onClick={() => alert("University Added")}
           />
         </div>
       </form>

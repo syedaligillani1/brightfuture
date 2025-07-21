@@ -12,7 +12,7 @@ import ScheduleCardList from './components/ScheduleCardList';
 import CalendarScheduleBox from './components/CalendarScheduleBox';
 import RecentActivity from './components/ActivityLog';
 import Schedules from './components/ScheduleCardList';
-import UniversitiesTable from './universities/UniversitiesTable';
+import UniversitiesTable from './screens/universities/UniversitiesTable';
 import tableData from './components/table/table.json';
 import Button from './utility/Button';
 import { useRouter } from 'next/navigation';

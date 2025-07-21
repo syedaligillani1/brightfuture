@@ -1,0 +1,98 @@
+[
+  {
+    "id": 1,
+    "name": "Computer Science",
+    "logo": "/logo.png",
+    "totalCourses": 25,
+    "totalInstructors": 12,
+    "totalStudents": 450,
+    "enrolledStudents": 380,
+    "conversion": 84
+  },
+  {
+    "id": 2,
+    "name": "Civil Engineering",
+    "logo": "/logo.png",
+    "totalCourses": 30,
+    "totalInstructors": 15,
+    "totalStudents": 380,
+    "enrolledStudents": 320,
+    "conversion": 84
+  },
+  {
+    "id": 3,
+    "name": "Biomedical Engineering",
+    "logo": "/logo.png",
+    "totalCourses": 30,
+    "totalInstructors": 14,
+    "totalStudents": 300,
+    "enrolledStudents": 250,
+    "conversion": 83
+  },
+  {
+    "name": "Civil 1",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%252520University",
+    "id": 7
+  },
+  {
+    "name": "Cs",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%2525252520University",
+    "id": 9
+  },
+  {
+    "name": "EE",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%25252525252520University",
+    "id": 10
+  },
+  {
+    "name": "CS",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%2525252525252520University",
+    "id": 11
+  },
+  {
+    "name": "ss",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%2520University",
+    "id": 12
+  },
+  {
+    "name": "civil 5",
+    "logo": "/logo.png",
+    "totalCourses": 0,
+    "totalInstructors": 0,
+    "totalStudents": 0,
+    "enrolledStudents": 0,
+    "conversion": 0,
+    "universityId": "Kuwait%2525252520University",
+    "id": 13
+  }
+]

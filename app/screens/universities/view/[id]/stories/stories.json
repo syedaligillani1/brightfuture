@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "title": "Student Success Story",
+    "author": "Jane Doe",
+    "content": "Jane overcame many challenges to graduate with honors.",
+    "status": true
+  },
+  {
+    "id": 2,
+    "title": "Research Breakthrough",
+    "author": "Dr. Smith",
+    "content": "Dr. Smith's team discovered a new algorithm for data compression.",
+    "status": true
+  },
+  {
+    "id": 3,
+    "title": "Alumni Spotlight",
+    "author": "John Alumni",
+    "content": "John is now a successful entrepreneur in the tech industry.",
+    "status": false
+  }
+]

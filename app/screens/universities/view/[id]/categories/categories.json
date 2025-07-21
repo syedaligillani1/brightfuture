@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Mathematics",
+    "totalCourses": 12
+  },
+  {
+    "id": 2,
+    "name": "Physics",
+    "totalCourses": 10
+  },
+  {
+    "id": 3,
+    "name": "Literature",
+    "totalCourses": 6
+  },
+  {
+    "name": "biology",
+    "totalCourses": 4,
+    "universityId": "Kuwait%25252520University",
+    "id": 5
+  }
+]

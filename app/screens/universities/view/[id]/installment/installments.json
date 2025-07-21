@@ -1,0 +1,31 @@
+[
+  {
+    "id": 1,
+    "planName": "Standard Plan",
+    "totalAmount": 1000,
+    "installments": 4,
+    "status": true
+  },
+  {
+    "id": 2,
+    "planName": "Premium Plan",
+    "totalAmount": 2000,
+    "installments": 6,
+    "status": true
+  },
+  {
+    "id": 3,
+    "planName": "Short Term Plan",
+    "totalAmount": 500,
+    "installments": 2,
+    "status": false
+  },
+  {
+    "planName": "hello",
+    "totalAmount": 13,
+    "installments": 1,
+    "status": true,
+    "universityId": "Kuwait%252525252525252520University",
+    "id": 4
+  }
+]

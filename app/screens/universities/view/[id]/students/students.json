@@ -1,0 +1,43 @@
+[
+  {
+    "id": 1,
+    "name": "Sara Alsannat",
+    "department": "Biomedical",
+    "purchaseCourses": 8,
+    "mobile": "99820270",
+    "status": false
+  },
+  {
+    "id": 2,
+    "name": "Fay Alqabandi",
+    "department": "Civil",
+    "purchaseCourses": 4,
+    "mobile": "50274784",
+    "status": true
+  },
+  {
+    "id": 3,
+    "name": "Latifa Meshal",
+    "department": "Biomedical",
+    "purchaseCourses": 6,
+    "mobile": "50941465",
+    "status": false
+  },
+  {
+    "id": 4,
+    "name": "musaid alwadi",
+    "department": "Computer Science",
+    "purchaseCourses": 6,
+    "mobile": "50884058",
+    "status": true
+  },
+  {
+    "name": "ali",
+    "department": "civil",
+    "purchaseCourses": 3,
+    "mobile": "12323322",
+    "status": true,
+    "universityId": "Kuwait%252525252525252525252520University",
+    "id": 5
+  }
+]

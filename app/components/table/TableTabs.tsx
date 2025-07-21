@@ -1,3 +1,4 @@
+import PrimaryButton from "@/app/components/PrimaryButton";
 import { Plus } from "lucide-react";
 
 interface TableTabsProps {
@@ -30,15 +31,13 @@ export default function TableTabs({
           </button>
         ))}
       </div>
-      {onAddNew && (
-        <button
-          onClick={onAddNew}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors"
-        >
-          <Plus className="w-4 h-4" />
-          <span>Add New</span>
-        </button>
-      )}
+      {/* {onAddNew && ( */}
+   <PrimaryButton
+   label={<><span style={{marginRight: 4}}>+</span> Add New</>}
+   onClick={onAddNew}
+   type="button"
+ />
+      
     </div>
   );
 } 

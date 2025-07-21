@@ -77,9 +77,8 @@ export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    const universityId = searchParams.get('universityId');
 
-    if (!id || !universityId) {
+    if (!id) {
       return NextResponse.json(
         { success: false, error: 'Department ID and University ID are required' },
         { status: 400 }
@@ -90,8 +89,7 @@ export async function DELETE(request: Request) {
     const departments = JSON.parse(fileData);
     
     const departmentIndex = departments.findIndex((dept: any) => 
-      (dept.id === parseInt(id, 10) || dept.id === id) && 
-      dept.universityId === universityId
+      (dept.id === parseInt(id, 10) || dept.id === id) 
     );
 
     if (departmentIndex === -1) {
@@ -110,6 +108,54 @@ export async function DELETE(request: Request) {
     console.error('Error deleting department:', error);
     return NextResponse.json(
       { success: false, error: 'Failed to delete department' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    const universityId = searchParams.get('universityId');
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: 'Department ID and University ID are required' },
+        { status: 400 }
+      );
+    }
+
+    const updatedDepartment = await request.json();
+    const fileData = await fs.readFile(departmentsFilePath, 'utf8');
+    const departments = JSON.parse(fileData);
+
+    const departmentIndex = departments.findIndex((dept: any) =>
+      (dept.id === parseInt(id, 10) || dept.id === id) 
+    );
+
+    if (departmentIndex === -1) {
+      return NextResponse.json(
+        { success: false, error: 'Department not found' },
+        { status: 404 }
+      );
+    }
+
+    // Update the department fields
+    departments[departmentIndex] = {
+      ...departments[departmentIndex],
+      ...updatedDepartment,
+      id: departments[departmentIndex].id, // Ensure id is not changed
+      universityId: departments[departmentIndex].universityId // Ensure universityId is not changed
+    };
+
+    await fs.writeFile(departmentsFilePath, JSON.stringify(departments, null, 2));
+
+    return NextResponse.json({ success: true, department: departments[departmentIndex] });
+  } catch (error) {
+    console.error('Error updating department:', error);
+    return NextResponse.json(
+      { success: false, error: 'Failed to update department' },
       { status: 500 }
     );
   }
